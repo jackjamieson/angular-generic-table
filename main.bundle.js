@@ -7,13 +7,21 @@ webpackJsonp([1,5],{
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__ = __webpack_require__(136);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__interfaces_gt_texts__ = __webpack_require__(323);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__interfaces_gt_texts__ = __webpack_require__(324);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__interfaces_gt_texts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__interfaces_gt_texts__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__interfaces_gt_information__ = __webpack_require__(321);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__interfaces_gt_information__ = __webpack_require__(322);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__interfaces_gt_information___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__interfaces_gt_information__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__interfaces_gt_options__ = __webpack_require__(322);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__interfaces_gt_options__ = __webpack_require__(323);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__interfaces_gt_options___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__interfaces_gt_options__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GenericTableComponent; });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -38,17 +46,18 @@ var GenericTableComponent = (function () {
         this._gtSettings = [];
         this._gtFields = [];
         this.gtDefaultTexts = {
-            loading: "Loading...",
-            noData: "No data",
-            noMatchingData: "No data matching results found",
-            noVisibleColumnsHeading: "No visible columns",
-            noVisibleColumns: "Please select at least one column to be visible.",
-            tableInfo: "Showing #recordFrom to #recordTo of #recordsAfterSearch entries.",
-            tableInfoAfterSearch: "Showing  #recordFrom to #recordTo of #recordsAfterSearch entries (filtered from a total of #recordsAll entries).",
-            csvDownload: "download",
-            sortLabel: "Sort:",
-            paginateNext: "Next page",
-            paginatePrevious: "Previous page"
+            loading: 'Loading...',
+            noData: 'No data',
+            noMatchingData: 'No data matching results found',
+            noVisibleColumnsHeading: 'No visible columns',
+            noVisibleColumns: 'Please select at least one column to be visible.',
+            tableInfo: 'Showing #recordFrom to #recordTo of #recordsAfterSearch entries.',
+            tableInfoAfterSearch: 'Showing  #recordFrom to #recordTo of #recordsAfterSearch entries (filtered from a total of #recordsAll entries).',
+            csvDownload: 'download',
+            sortLabel: 'Sort:',
+            paginateNext: 'Next page',
+            paginatePrevious: 'Previous page',
+            inlineEditEdited: 'Press enter to save'
         };
         this.gtTexts = this.gtDefaultTexts;
         this.gtEvent = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
@@ -292,85 +301,6 @@ var GenericTableComponent = (function () {
                 value: { pageCurrent: this.gtInfo.pageCurrent, recordLength: this.gtInfo.recordLength }
             });
         };
-        /**
-         * Apply filter(s).
-         * @param {Object} filter - object containing key value pairs, where value should be array of values.
-         */
-        this.gtApplyFilter = function (filter) {
-            this.gtInfo.filter = filter;
-            // go to first page
-            this.goToPage(1);
-        };
-        /** Clear/remove applied filter(s). */
-        this.gtClearFilter = function () {
-            this.gtInfo.filter = false;
-            //this.updateRecordRange();
-        };
-        /**
-         * Search
-         * @param {string} value - string containing one or more words
-         */
-        this.gtSearch = function (value) {
-            this.gtInfo.searchTerms = value;
-            //always go to first page when searching
-            this.goToPage(1);
-        };
-        /**
-         * Create store to hold previously loaded records.
-         * @param {number} records - total number of records in store.
-         * @param {number} perPage - how many records to show per page.
-         * @returns {Array} a nested array to hold records per page.
-         */
-        this.createStore = function (records, perPage) {
-            var stores = Math.ceil(records / perPage);
-            var store = [];
-            for (var i = 0; i < stores; i++) {
-                store[i] = [];
-            }
-            return store;
-        };
-        /**
-         * Create placeholders for rows while loading data from back-end.
-         * @param {number} perPage - how many records to show per page.
-         * @returns {Array} an array containing empty records to be presented while fetching real data.
-         */
-        this.loadingContent = function (perPage) {
-            // create row object
-            var rowObject = {
-                $$loading: true
-            };
-            var order = 0;
-            // sort settings by column order
-            this._gtSettings.sort(this.getColumnOrder);
-            // loop through all settings objects...
-            for (var i = 0; i < this._gtSettings.length; i++) {
-                var setting = this._gtSettings[i];
-                // ...if column is visible and enabled...
-                if (setting.visible !== false && setting.enabled !== false) {
-                    // ...if first column, set value to loading text otherwise leave it empty
-                    if (order === 0) {
-                        //console.log(setting.objectKey);
-                        rowObject[setting.objectKey] = this.gtTexts.loading;
-                        this.loadingProperty = setting.objectKey;
-                    }
-                    else {
-                        rowObject[setting.objectKey] = '';
-                    }
-                    order++;
-                }
-                else {
-                    rowObject[setting.objectKey] = '';
-                }
-            }
-            // create content placeholder
-            var contentPlaceholder = [];
-            // create equal number of rows as rows per page
-            for (var i = 0; i < perPage; i++) {
-                // ...add temporary row object
-                contentPlaceholder.push(rowObject);
-            }
-            return contentPlaceholder;
-        };
         // TODO: move to helper functions
         /** Sort by sort order */
         this.getSortOrder = function (a, b) {
@@ -494,10 +424,19 @@ var GenericTableComponent = (function () {
         this._toggleRowProperty(row, 'isSelected');
     };
     /**
+     * Edit row data.
+     * @param {GtRow} row - row object that has been edited.
+     * @param {GtRow} oldValue - row object before edit.
+     */
+    GenericTableComponent.prototype.editRow = function (row, oldValue) {
+        this._toggleRowProperty(row, 'isEdited', oldValue);
+    };
+    /**
      * Update meta info for all rows, ie. isSelected, isOpen.
      * @param {Array} array - array that holds rows that need to be updated.
      * @param {string} property - name of property that should be changed/toggled.
      * @param {boolean} active - should rows be expanded/open, selected.
+     * @param {GtRow} exception - update all rows except this one.
      */
     GenericTableComponent.prototype._updateMetaInfo = function (array, property, active, exception) {
         for (var i = 0; i < array.length; i++) {
@@ -587,8 +526,9 @@ var GenericTableComponent = (function () {
      * Toggle meta info for row, ie. isSelected, isOpen.
      * @param {Object} row - row object.
      * @param {string} property - name of property that should be changed/toggled.
+     * @param {any} propertyValues - optional property values that can be passed.
      */
-    GenericTableComponent.prototype._toggleRowProperty = function (row, property) {
+    GenericTableComponent.prototype._toggleRowProperty = function (row, property, propertyValues) {
         var eventName;
         var eventValue;
         // make sure gtRowId exists on row object
@@ -663,14 +603,145 @@ var GenericTableComponent = (function () {
                         changedRow: row
                     };
                     break;
+                case 'isEdited':
+                    eventName = 'updated';
+                    var oldValue = propertyValues;
+                    // check if edit object exists for row
+                    if (typeof this.metaInfo[row.$$gtRowId][property] === 'undefined') {
+                        this.metaInfo[row.$$gtRowId][property] = {
+                            originalValue: oldValue,
+                            oldValue: oldValue,
+                            newValue: row
+                        };
+                    }
+                    else {
+                        this.metaInfo[row.$$gtRowId][property].oldValue = oldValue;
+                        this.metaInfo[row.$$gtRowId][property].newValue = row;
+                    }
+                    eventValue = this.metaInfo[row.$$gtRowId][property];
+                    break;
             }
             this.gtEvent.emit({
                 name: 'gt-row-' + eventName,
                 value: eventValue
             });
-            this.metaInfo[row.$$gtRowId][property] = !this.metaInfo[row.$$gtRowId][property];
+            if (property !== 'isEdited') {
+                this.metaInfo[row.$$gtRowId][property] = !this.metaInfo[row.$$gtRowId][property];
+            }
         }
     };
+    /**
+     * Update column.
+     * @param {Object} $event - key up event.
+     * @param {GtRow} row - row object.
+     * @param {GtRenderField} column - column object.
+     */
+    GenericTableComponent.prototype.gtUpdateColumn = function ($event, row, column) {
+        switch ($event.key) {
+            case 'Enter':
+                var oldValue = __assign({}, row);
+                row[column.objectKey] = column.renderValue;
+                this.editRow(row, oldValue);
+                column.edited = false;
+                break;
+            case 'Escape':
+                column.renderValue = row[column.objectKey];
+                column.edited = false;
+                break;
+            default:
+                column.edited = row[column.objectKey] !== column.renderValue;
+                break;
+        }
+    };
+    GenericTableComponent.prototype.gtSelect = function (row, column) {
+        var oldValue = __assign({}, row);
+        row[column.objectKey] = column.renderValue;
+        this.editRow(row, oldValue);
+    };
+    /**
+     * Apply filter(s).
+     * @param {Object} filter - object containing key value pairs, where value should be array of values.
+     */
+    GenericTableComponent.prototype.gtApplyFilter = function (filter) {
+        this.gtInfo.filter = filter;
+        // go to first page
+        this.goToPage(1);
+    };
+    ;
+    /** Clear/remove applied filter(s). */
+    GenericTableComponent.prototype.gtClearFilter = function () {
+        this.gtInfo.filter = false;
+        //this.updateRecordRange();
+    };
+    ;
+    /**
+     * Search
+     * @param {string} value - string containing one or more words
+     */
+    GenericTableComponent.prototype.gtSearch = function (value) {
+        this.gtInfo.searchTerms = value;
+        //always go to first page when searching
+        this.goToPage(1);
+    };
+    ;
+    /**
+     * Create store to hold previously loaded records.
+     * @param {number} records - total number of records in store.
+     * @param {number} perPage - how many records to show per page.
+     * @returns {Array} a nested array to hold records per page.
+     */
+    GenericTableComponent.prototype.createStore = function (records, perPage) {
+        var stores = Math.ceil(records / perPage);
+        var store = [];
+        for (var i = 0; i < stores; i++) {
+            store[i] = [];
+        }
+        return store;
+    };
+    ;
+    /**
+     * Create placeholders for rows while loading data from back-end.
+     * @param {number} perPage - how many records to show per page.
+     * @returns {Array} an array containing empty records to be presented while fetching real data.
+     */
+    GenericTableComponent.prototype.loadingContent = function (perPage) {
+        // create row object
+        var rowObject = {
+            $$loading: true
+        };
+        var order = 0;
+        // sort settings by column order
+        this._gtSettings.sort(this.getColumnOrder);
+        // loop through all settings objects...
+        for (var i = 0; i < this._gtSettings.length; i++) {
+            var setting = this._gtSettings[i];
+            // ...if column is visible and enabled...
+            if (setting.visible !== false && setting.enabled !== false) {
+                // ...if first column, set value to loading text otherwise leave it empty
+                if (order === 0) {
+                    //console.log(setting.objectKey);
+                    rowObject[setting.objectKey] = this.gtTexts.loading;
+                    this.loadingProperty = setting.objectKey;
+                }
+                else {
+                    rowObject[setting.objectKey] = '';
+                }
+                order++;
+            }
+            else {
+                rowObject[setting.objectKey] = '';
+            }
+        }
+        // create content placeholder
+        var contentPlaceholder = [];
+        // create equal number of rows as rows per page
+        for (var i = 0; i < perPage; i++) {
+            // ...add temporary row object
+            contentPlaceholder.push(rowObject);
+        }
+        return contentPlaceholder;
+    };
+    ;
     /** Export data as CSV
      * @param {string} fileName - optional file name (overrides default file name).
      */
@@ -695,9 +766,12 @@ var GenericTableComponent = (function () {
                     // get field settings
                     var fieldSetting = _this.getProperty(_this._gtFields, _this._gtSettings[i_1].objectKey);
                     // get export value, if export function is defined use it otherwise check for value function and as a last resort export raw data
-                    csv += fieldSetting.export && typeof fieldSetting.export === 'function' ?
+                    var exportValue = fieldSetting.export && typeof fieldSetting.export === 'function' ?
                         fieldSetting.export(row) : fieldSetting.value && typeof fieldSetting.value === 'function' ?
                         fieldSetting.value(row) : row[_this._gtSettings[i_1].objectKey];
+                    // escape export value using double quotes (") if export value contains delimiter
+                    exportValue = typeof exportValue === 'string' && exportValue.indexOf(_this.gtOptions.csvDelimiter) != -1 ? '"' + exportValue + '"' : exportValue;
+                    csv += exportValue;
                     if (i_1 < (_this._gtSettings.length - 1)) {
                         csv += _this.gtOptions.csvDelimiter; //this.csvSeparator;
                     }
@@ -711,7 +785,7 @@ var GenericTableComponent = (function () {
             navigator.msSaveOrOpenBlob(blob, fileName ? fileName : this.gtTexts.csvDownload + '.csv');
         }
         else {
-            var link = document.createElement("a");
+            var link = document.createElement('a');
             link.style.display = 'none';
             document.body.appendChild(link);
             if (link.download !== undefined) {
@@ -752,7 +826,7 @@ var GenericTableComponent = (function () {
                 }
                 else if (setting.sort === 'desc') {
                     // ... add to sorting
-                    sorting.push("-" + setting.objectKey);
+                    sorting.push('-' + setting.objectKey);
                 }
             }
             // ...if no sorting applied...
@@ -881,7 +955,7 @@ __decorate([
 GenericTableComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'generic-table',
-        template: "\n      <table class=\"table\" ngClass=\"{{gtClasses}} {{gtOptions.stack ? 'table-stacked':''}}\" *ngIf=\"gtFields && gtSettings && (gtFields | gtVisible:gtSettings:refreshPipe).length > 0\">\n          <thead>\n          <tr>\n              <th class=\"gt-sort-label\" *ngIf=\"gtOptions.stack\">{{gtTexts.sortLabel}}</th><th *ngFor=\"let column of gtSettings | gtVisible:gtSettings:refreshPipe\" ngClass=\"{{column.objectKey +'-column' | dashCase}} {{gtFields | gtProperty:column.objectKey:'classNames'}} {{column.sortEnabled ? 'sort-'+column.sort:''}} {{column.sortEnabled && column.sortOrder >= 0  ? 'sort-order-'+column.sortOrder:''}}\" (click)=\"column.sortEnabled ? gtSort(column.objectKey,$event):'';\">{{gtFields | gtProperty:column.objectKey:'name'}}</th>\n          </tr>\n          </thead>\n          <tbody *ngIf=\"gtData && gtInfo\">\n          <ng-template class=\"table-rows\" ngFor let-row [ngForOf]=\"gtOptions.lazyLoad && gtInfo ? (gtData[gtInfo.pageCurrent-1] | gtMeta:(gtInfo.pageCurrent-1):gtInfo.recordLength) : (gtData | gtMeta:null:null:gtData.length | gtFilter:gtInfo.filter:gtInfo:refreshFilter:gtData.length | gtSearch:gtInfo.searchTerms:gtInfo:gtSettings:gtFields:gtData.length | gtOrderBy:sortOrder:gtFields:refreshSorting:gtData.length | gtChunk:gtInfo:gtInfo.recordLength:gtInfo.pageCurrent:refreshPageArray:gtData.length:gtEvent:data)\">\n              <tr [ngClass]=\"{'row-selected':metaInfo[row.$$gtRowId]?.isSelected, 'row-open':metaInfo[row.$$gtRowId]?.isOpen, 'row-loading':loading}\" (click)=\"gtOptions.rowSelection ? toggleSelect(row):null\">\n                  <td *ngFor=\"let column of row | gtRender:gtSettings:gtFields:refreshPipe:loading:gtOptions.highlightSearch:gtInfo.searchTerms;\" ngClass=\"{{column.objectKey +'-column' | dashCase}} {{gtFields | gtProperty:column.objectKey:'classNames'}}\">\n                      <span class=\"gt-row-label\" *ngIf=\"gtOptions.stack\">{{(gtFields | gtProperty:column.objectKey:'stackedHeading')? (gtFields | gtProperty:column.objectKey:'stackedHeading'):(gtFields | gtProperty:column.objectKey:'name')}}</span>\n                      <gt-custom-component-factory *ngIf=\"column.columnComponent\" class=\"gt-row-content\" [type]=\"column.columnComponent.type\" [injector]=\"column.columnComponent.injector\" [row]=\"row\" [column]=\"column\" (redrawEvent)=\"redraw($event)\" (click)=\"column.click ? column.click(row,column):'';column.expand ? toggleCollapse(row):''\"></gt-custom-component-factory>\n                      <span *ngIf=\"!column.columnComponent\" class=\"gt-row-content\" [innerHTML]=\"column.renderValue\" (click)=\"column.click ? column.click(row,column):'';column.expand ? toggleCollapse(row):''\"></span>\n                  </td>\n              </tr>\n              <tr class=\"row-expanded\" *ngIf=\"metaInfo[row.$$gtRowId]?.isOpen\">\n                  <td [attr.colspan]=\"(gtFields | gtVisible:gtSettings:refreshPipe).length\">\n                      <gt-expanding-row [row]=\"row\" [type]=\"gtRowComponent\" (redrawEvent)=\"redraw($event)\" (toggleRowEvent)=\"toggleCollapse($event)\"></gt-expanding-row>\n                  </td>\n              </tr>\n          </ng-template>\n          <tr *ngIf=\"gtInfo.pageTotal === 0 && (gtInfo.searchTerms || gtInfo.filter) && !loading\">\n              <td class=\"gt-no-matching-results\" [attr.colspan]=\"(gtFields | gtVisible:gtSettings).length\">{{gtTexts.noMatchingData}}</td>\n          </tr>\n          <tr *ngIf=\"gtInfo.pageTotal === 0 && !(gtInfo.searchTerms || gtInfo.filter) && !loading\">\n              <td class=\"gt-no-results\" [attr.colspan]=\"(gtFields | gtVisible:gtSettings).length\">{{gtTexts.noData}}</td>\n          </tr>\n          <tr *ngIf=\"gtInfo.pageTotal === 0 && loading\">\n              <td class=\"gt-loading-data\" [attr.colspan]=\"(gtFields | gtVisible:gtSettings).length\">{{gtTexts.loading}}</td>\n          </tr>\n          </tbody>\n      </table>\n      <table class=\"table\" ngClass=\"{{gtClasses}} {{gtOptions.stack ? 'table-stacked':''}}\"  *ngIf=\"gtFields && gtSettings && (gtFields | gtVisible:gtSettings:refreshPipe).length === 0\">\n          <thead>\n          <tr>\n              <th class=\"gt-no-visible-columns\">{{gtTexts.noVisibleColumnsHeading}}</th>\n          </tr>\n          </thead>\n          <tbody>\n          <tr>\n              <td class=\"gt-no-visible-columns\">{{gtTexts.noVisibleColumns}}</td>\n          </tr>\n          </tbody>\n      </table>\n      <table class=\"table\" ngClass=\"{{gtClasses}} {{gtOptions.stack ? 'table-stacked':''}}\"  *ngIf=\"!gtFields || !gtSettings\">\n          <thead>\n          <tr>\n              <th class=\"gt-loading-config\">&nbsp;</th>\n          </tr>\n          </thead>\n          <tbody>\n          <tr>\n              <td class=\"gt-loading-config\">&nbsp;</td>\n          </tr>\n          </tbody>\n      </table>\n      \n  ",
+        template: "\n    <table class=\"table\" ngClass=\"{{gtClasses}} {{gtOptions.stack ? 'table-stacked':''}}\" *ngIf=\"gtFields && gtSettings && (gtFields | gtVisible:gtSettings:refreshPipe).length > 0\">\n      <thead>\n      <tr>\n        <th class=\"gt-sort-label\" *ngIf=\"gtOptions.stack\">{{gtTexts.sortLabel}}</th><th *ngFor=\"let column of gtSettings | gtVisible:gtSettings:refreshPipe\" ngClass=\"{{column.objectKey +'-column' | dashCase}} {{gtFields | gtProperty:column.objectKey:'classNames'}} {{column.sortEnabled ? 'sort-'+column.sort:''}} {{column.sortEnabled && column.sortOrder >= 0  ? 'sort-order-'+column.sortOrder:''}}\" (click)=\"column.sortEnabled ? gtSort(column.objectKey,$event):'';\">{{gtFields | gtProperty:column.objectKey:'name'}}</th>\n      </tr>\n      </thead>\n      <tbody *ngIf=\"gtData && gtInfo\">\n      <ng-template class=\"table-rows\" ngFor let-row [ngForOf]=\"gtOptions.lazyLoad && gtInfo ? (gtData[gtInfo.pageCurrent-1] | gtMeta:(gtInfo.pageCurrent-1):gtInfo.recordLength) : (gtData | gtMeta:null:null:gtData.length | gtFilter:gtInfo.filter:gtInfo:refreshFilter:gtData.length | gtSearch:gtInfo.searchTerms:gtInfo:gtSettings:gtFields:gtData.length | gtOrderBy:sortOrder:gtFields:refreshSorting:gtData.length | gtChunk:gtInfo:gtInfo.recordLength:gtInfo.pageCurrent:refreshPageArray:gtData.length:gtEvent:data)\">\n        <tr [ngClass]=\"{'row-selected':metaInfo[row.$$gtRowId]?.isSelected, 'row-open':metaInfo[row.$$gtRowId]?.isOpen, 'row-loading':loading}\" (click)=\"gtOptions.rowSelection ? toggleSelect(row):null\">\n          <td *ngFor=\"let column of row | gtRender:gtSettings:gtFields:refreshPipe:loading:gtOptions.highlightSearch:gtInfo.searchTerms;\" ngClass=\"{{column.objectKey +'-column' | dashCase}} {{gtFields | gtProperty:column.objectKey:'classNames'}} {{(gtFields | gtProperty:column.objectKey:'inlineEdit') ? 'gt-inline-edit':''}} {{column.edited ? 'gt-edited':''}}\">\n            <span class=\"gt-row-label\" *ngIf=\"gtOptions.stack\">{{(gtFields | gtProperty:column.objectKey:'stackedHeading')? (gtFields | gtProperty:column.objectKey:'stackedHeading'):(gtFields | gtProperty:column.objectKey:'name')}}</span>\n            <gt-custom-component-factory *ngIf=\"column.columnComponent\" class=\"gt-row-content\" [type]=\"column.columnComponent.type\" [injector]=\"column.columnComponent.injector\" [row]=\"row\" [column]=\"column\" (redrawEvent)=\"redraw($event)\" (click)=\"column.click ? column.click(row,column):'';column.expand ? toggleCollapse(row):''\"></gt-custom-component-factory>\n            <span *ngIf=\"!column.columnComponent && !(gtFields | gtProperty:column.objectKey:'inlineEdit')\" class=\"gt-row-content\" [innerHTML]=\"column.renderValue\" (click)=\"column.click ? column.click(row,column):'';column.expand ? toggleCollapse(row):''\"></span>\n            <ng-template [ngIf]=\"!column.columnComponent && (gtFields | gtProperty:column.objectKey:'inlineEdit') === true\">\n              <input class=\"inline-edit\" type=\"text\" [(ngModel)]=\"column.renderValue\" (keyup)=\"gtUpdateColumn($event,row, column)\">\n              <span class=\"gt-inline-edit-notice\">{{gtTexts.inlineEditEdited}}</span>\n            </ng-template>\n            <gt-dropdown *ngIf=\"!column.columnComponent && (gtFields | gtProperty:column.objectKey:'inlineEdit') && (gtFields | gtProperty:column.objectKey:'inlineEdit').length > 0\" [options]=\"gtFields | gtProperty:column.objectKey:'inlineEdit'\" [(selected)]=\"column.renderValue\" (selectedChange)=\"gtSelect(row, column)\">Add inline editing module</gt-dropdown>\n          </td>\n        </tr>\n        <tr class=\"row-expanded\" *ngIf=\"metaInfo[row.$$gtRowId]?.isOpen\">\n          <td [attr.colspan]=\"(gtFields | gtVisible:gtSettings:refreshPipe).length\">\n            <gt-expanding-row [row]=\"row\" [type]=\"gtRowComponent\" (redrawEvent)=\"redraw($event)\" (toggleRowEvent)=\"toggleCollapse($event)\"></gt-expanding-row>\n          </td>\n        </tr>\n      </ng-template>\n      <tr *ngIf=\"gtInfo.pageTotal === 0 && (gtInfo.searchTerms || gtInfo.filter) && !loading\">\n        <td class=\"gt-no-matching-results\" [attr.colspan]=\"(gtFields | gtVisible:gtSettings).length\">{{gtTexts.noMatchingData}}</td>\n      </tr>\n      <tr *ngIf=\"gtInfo.pageTotal === 0 && !(gtInfo.searchTerms || gtInfo.filter) && !loading\">\n        <td class=\"gt-no-results\" [attr.colspan]=\"(gtFields | gtVisible:gtSettings).length\">{{gtTexts.noData}}</td>\n      </tr>\n      <tr *ngIf=\"gtInfo.pageTotal === 0 && loading\">\n        <td class=\"gt-loading-data\" [attr.colspan]=\"(gtFields | gtVisible:gtSettings).length\">{{gtTexts.loading}}</td>\n      </tr>\n      </tbody>\n    </table>\n    <table class=\"table\" ngClass=\"{{gtClasses}} {{gtOptions.stack ? 'table-stacked':''}}\"  *ngIf=\"gtFields && gtSettings && (gtFields | gtVisible:gtSettings:refreshPipe).length === 0\">\n      <thead>\n      <tr>\n        <th class=\"gt-no-visible-columns\">{{gtTexts.noVisibleColumnsHeading}}</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td class=\"gt-no-visible-columns\">{{gtTexts.noVisibleColumns}}</td>\n      </tr>\n      </tbody>\n    </table>\n    <table class=\"table\" ngClass=\"{{gtClasses}} {{gtOptions.stack ? 'table-stacked':''}}\"  *ngIf=\"!gtFields || !gtSettings\">\n      <thead>\n      <tr>\n        <th class=\"gt-loading-config\">&nbsp;</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td class=\"gt-loading-config\">&nbsp;</td>\n      </tr>\n      </tbody>\n    </table>\n  ",
     }),
     __metadata("design:paramtypes", [])
 ], GenericTableComponent);
@@ -1065,7 +1139,7 @@ var CustomRowComponent = (function (_super) {
 CustomRowComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-custom-row',
-        template: __webpack_require__(441)
+        template: __webpack_require__(443)
     }),
     __metadata("design:paramtypes", [])
 ], CustomRowComponent);
@@ -1074,7 +1148,7 @@ CustomRowComponent = __decorate([
 
 /***/ }),
 
-/***/ 318:
+/***/ 319:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1145,7 +1219,7 @@ var _a;
 
 /***/ }),
 
-/***/ 319:
+/***/ 320:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1200,7 +1274,7 @@ __decorate([
 GtPaginationComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'gt-pagination',
-        template: "<nav aria-label=\"Table navigation\" *ngIf=\"genericTable && genericTable.gtInfo && ready && genericTable.gtData?.length > 0\">\n  <ul class=\"pagination\" [ngClass]=\"gtClasses\">\n    <li class=\"page-item\" [ngClass]=\"{'disabled' : genericTable.gtInfo.pageCurrent === 1 || genericTable.loading }\"><a class=\"page-link\" href=\"javascript:void(0);\" (click)=\"genericTable.gtInfo.pageCurrent > 1 && genericTable.previousPage()\" [attr.aria-label]=\"genericTable.gtTexts.paginatePrevious\"><span aria-hidden=\"true\">&laquo;</span><span class=\"sr-only\">{{genericTable.gtTexts.paginatePrevious}}</span></a></li>\n    <li class=\"page-item\" [ngClass]=\"{'disabled' : genericTable.loading && genericTable.gtInfo.pageCurrent !== page, 'active' : genericTable.gtInfo.pageCurrent === page }\" *ngFor=\"let page of genericTable.gtInfo.pageTotal | gtPaginationPipe:genericTable.gtInfo.pageCurrent\"><a class=\"page-link\" [tabindex]=\"page === true ? -1:0\" href=\"javascript:void(0);\" (click)=\"page === true ? '':genericTable.goToPage(page)\">{{page === true ? '&hellip;':page}}</a></li>\n    <li class=\"page-item\" [ngClass]=\"{'disabled' : genericTable.gtInfo.pageCurrent === genericTable.gtInfo.pageTotal || genericTable.loading }\"><a class=\"page-link gt-link\" href=\"javascript:void(0);\" (click)=\"genericTable.gtInfo.pageCurrent !== genericTable.gtInfo.pageTotal && genericTable.nextPage()\" [attr.aria-label]=\"genericTable.gtTexts.paginateNext\"><span aria-hidden=\"true\">&raquo;</span><span class=\"sr-only\">{{genericTable.gtTexts.paginateNext}}</span></a></li>\n  </ul>\n  </nav>\n    ",
+        template: "<nav class=\"gt-pagination\" aria-label=\"Table navigation\" *ngIf=\"genericTable && genericTable.gtInfo && ready && genericTable.gtData?.length > 0\" [ngClass]=\"{'no-data':genericTable.gtInfo.pageTotal === 0}\">\n  <ul class=\"pagination\" [ngClass]=\"gtClasses\">\n    <li class=\"page-item\" [ngClass]=\"{'disabled' : genericTable.gtInfo.pageCurrent === 1 || genericTable.loading }\"><a class=\"page-link\" href=\"javascript:void(0);\" (click)=\"genericTable.gtInfo.pageCurrent > 1 && genericTable.previousPage()\" [attr.aria-label]=\"genericTable.gtTexts.paginatePrevious\"><span aria-hidden=\"true\">&laquo;</span><span class=\"sr-only\">{{genericTable.gtTexts.paginatePrevious}}</span></a></li>\n    <li class=\"page-item\" [ngClass]=\"{'disabled' : genericTable.loading && genericTable.gtInfo.pageCurrent !== page, 'active' : genericTable.gtInfo.pageCurrent === page }\" *ngFor=\"let page of genericTable.gtInfo.pageTotal | gtPaginationPipe:genericTable.gtInfo.pageCurrent\"><a class=\"page-link\" [tabindex]=\"page === true ? -1:0\" href=\"javascript:void(0);\" (click)=\"page === true ? '':genericTable.goToPage(page)\">{{page === true ? '&hellip;':page}}</a></li>\n    <li class=\"page-item\" [ngClass]=\"{'disabled' : genericTable.gtInfo.pageCurrent === genericTable.gtInfo.pageTotal || genericTable.loading }\"><a class=\"page-link gt-link\" href=\"javascript:void(0);\" (click)=\"genericTable.gtInfo.pageCurrent !== genericTable.gtInfo.pageTotal && genericTable.nextPage()\" [attr.aria-label]=\"genericTable.gtTexts.paginateNext\"><span aria-hidden=\"true\">&raquo;</span><span class=\"sr-only\">{{genericTable.gtTexts.paginateNext}}</span></a></li>\n  </ul>\n  </nav>\n    ",
         styles: ['.gt-link {cursor: pointer;}']
     })
 ], GtPaginationComponent);
@@ -1210,6 +1284,9 @@ var PaginationPipe = (function () {
     function PaginationPipe() {
     }
     PaginationPipe.prototype.transform = function (totalPages, currentPage) {
+        if (totalPages === 0) {
+            return [1];
+        }
         var pagination = []; // create new empty array for pagination
         var siblings = 2; // sibling elements ie. number of elements on each side of current page
         var paginationLength = totalPages < (siblings * 2) + 1 ? totalPages : (siblings * 2) + 1; // number of elements in pagination array
@@ -1263,7 +1340,7 @@ var _a, _b;
 
 /***/ }),
 
-/***/ 320:
+/***/ 321:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1338,28 +1415,28 @@ var _a, _b;
 
 /***/ }),
 
-/***/ 321:
+/***/ 322:
 /***/ (function(module, exports) {
 
 //# sourceMappingURL=gt-information.js.map
 
 /***/ }),
 
-/***/ 322:
+/***/ 323:
 /***/ (function(module, exports) {
 
 //# sourceMappingURL=gt-options.js.map
 
 /***/ }),
 
-/***/ 323:
+/***/ 324:
 /***/ (function(module, exports) {
 
 //# sourceMappingURL=gt-texts.js.map
 
 /***/ }),
 
-/***/ 324:
+/***/ 325:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1407,405 +1484,405 @@ var BasicComponent = (function () {
                     stackedHeading: 'Custom heading'
                 }],
             data: [{
-                    "id": 1,
-                    "name": "Anna",
-                    "lucky_number": 63
-                }, {
-                    "id": 2,
-                    "name": "Julie",
-                    "lucky_number": 8
-                }, {
-                    "id": 3,
-                    "name": "Lillian",
-                    "lucky_number": 30
-                }, {
-                    "id": 4,
-                    "name": "Norma",
-                    "lucky_number": 13
-                }, {
-                    "id": 5,
-                    "name": "Ralph",
-                    "lucky_number": 28
-                }, {
-                    "id": 6,
-                    "name": "Benjamin",
-                    "lucky_number": 66
-                }, {
-                    "id": 7,
-                    "name": "George",
-                    "lucky_number": 66
-                }, {
-                    "id": 8,
-                    "name": "Ryan",
-                    "lucky_number": 65
-                }, {
-                    "id": 9,
-                    "name": "Martha",
-                    "lucky_number": 57
-                }, {
-                    "id": 10,
-                    "name": "Todd",
-                    "lucky_number": 65
-                }, {
-                    "id": 11,
-                    "name": "Norma",
-                    "lucky_number": 73
-                }, {
-                    "id": 12,
-                    "name": "Frank",
-                    "lucky_number": 27
-                }, {
-                    "id": 13,
-                    "name": "Kathryn",
-                    "lucky_number": 93
-                }, {
-                    "id": 14,
-                    "name": "Philip",
-                    "lucky_number": 63
-                }, {
-                    "id": 15,
-                    "name": "Ronald",
-                    "lucky_number": 89
-                }, {
-                    "id": 16,
-                    "name": "Joshua",
-                    "lucky_number": 18
-                }, {
-                    "id": 17,
-                    "name": "Phillip",
-                    "lucky_number": 16
-                }, {
-                    "id": 18,
-                    "name": "Susan",
-                    "lucky_number": 6
-                }, {
-                    "id": 19,
-                    "name": "Louise",
-                    "lucky_number": 52
-                }, {
-                    "id": 20,
-                    "name": "Gary",
-                    "lucky_number": 18
-                }, {
-                    "id": 21,
-                    "name": "Laura",
-                    "lucky_number": 9
-                }, {
-                    "id": 22,
-                    "name": "Tina",
-                    "lucky_number": 70
-                }, {
-                    "id": 23,
-                    "name": "Jesse",
-                    "lucky_number": 2
-                }, {
-                    "id": 24,
-                    "name": "Jessica",
-                    "lucky_number": 15
-                }, {
-                    "id": 25,
-                    "name": "Scott",
-                    "lucky_number": 38
-                }, {
-                    "id": 26,
-                    "name": "Michael",
-                    "lucky_number": 23
-                }, {
-                    "id": 27,
-                    "name": "Harold",
-                    "lucky_number": 66
-                }, {
-                    "id": 28,
-                    "name": "William",
-                    "lucky_number": 57
-                }, {
-                    "id": 29,
-                    "name": "Harry",
-                    "lucky_number": 14
-                }, {
-                    "id": 30,
-                    "name": "Dennis",
-                    "lucky_number": 9
-                }, {
-                    "id": 31,
-                    "name": "Sara",
-                    "lucky_number": 9
-                }, {
-                    "id": 32,
-                    "name": "David",
-                    "lucky_number": 31
-                }, {
-                    "id": 33,
-                    "name": "Antonio",
-                    "lucky_number": 2
-                }, {
-                    "id": 34,
-                    "name": "Anna",
-                    "lucky_number": 85
-                }, {
-                    "id": 35,
-                    "name": "Earl",
-                    "lucky_number": 98
-                }, {
-                    "id": 36,
-                    "name": "Melissa",
-                    "lucky_number": 70
-                }, {
-                    "id": 37,
-                    "name": "Eric",
-                    "lucky_number": 94
-                }, {
-                    "id": 38,
-                    "name": "Joe",
-                    "lucky_number": 42
-                }, {
-                    "id": 39,
-                    "name": "Andrea",
-                    "lucky_number": 39
-                }, {
-                    "id": 40,
-                    "name": "Michael",
-                    "lucky_number": 44
-                }, {
-                    "id": 41,
-                    "name": "Lillian",
-                    "lucky_number": 10
-                }, {
-                    "id": 42,
-                    "name": "Elizabeth",
-                    "lucky_number": 24
-                }, {
-                    "id": 43,
-                    "name": "Ryan",
-                    "lucky_number": 78
-                }, {
-                    "id": 44,
-                    "name": "Phillip",
-                    "lucky_number": 86
-                }, {
-                    "id": 45,
-                    "name": "Patrick",
-                    "lucky_number": 64
-                }, {
-                    "id": 46,
-                    "name": "Barbara",
-                    "lucky_number": 54
-                }, {
-                    "id": 47,
-                    "name": "Patricia",
-                    "lucky_number": 9
-                }, {
-                    "id": 48,
-                    "name": "Brenda",
-                    "lucky_number": 18
-                }, {
-                    "id": 49,
-                    "name": "Sara",
-                    "lucky_number": 12
-                }, {
-                    "id": 50,
-                    "name": "Steven",
-                    "lucky_number": 50
-                }, {
-                    "id": 51,
-                    "name": "Steven",
-                    "lucky_number": 44
-                }, {
-                    "id": 52,
-                    "name": "Paul",
-                    "lucky_number": 88
-                }, {
-                    "id": 53,
-                    "name": "Ann",
-                    "lucky_number": 51
-                }, {
-                    "id": 54,
-                    "name": "Frank",
-                    "lucky_number": 3
-                }, {
-                    "id": 55,
-                    "name": "Beverly",
-                    "lucky_number": 10
-                }, {
-                    "id": 56,
-                    "name": "Elizabeth",
-                    "lucky_number": 52
-                }, {
-                    "id": 57,
-                    "name": "Patrick",
-                    "lucky_number": 96
-                }, {
-                    "id": 58,
-                    "name": "Susan",
-                    "lucky_number": 92
-                }, {
-                    "id": 59,
-                    "name": "Lawrence",
-                    "lucky_number": 53
-                }, {
-                    "id": 60,
-                    "name": "Denise",
-                    "lucky_number": 65
-                }, {
-                    "id": 61,
-                    "name": "Carol",
-                    "lucky_number": 33
-                }, {
-                    "id": 62,
-                    "name": "Larry",
-                    "lucky_number": 95
-                }, {
-                    "id": 63,
-                    "name": "Martha",
-                    "lucky_number": 32
-                }, {
-                    "id": 64,
-                    "name": "Steve",
-                    "lucky_number": 69
-                }, {
-                    "id": 65,
-                    "name": "Timothy",
-                    "lucky_number": 16
-                }, {
-                    "id": 66,
-                    "name": "Jose",
-                    "lucky_number": 16
-                }, {
-                    "id": 67,
-                    "name": "Jennifer",
-                    "lucky_number": 96
-                }, {
-                    "id": 68,
-                    "name": "Benjamin",
-                    "lucky_number": 20
-                }, {
-                    "id": 69,
-                    "name": "Christine",
-                    "lucky_number": 8
-                }, {
-                    "id": 70,
-                    "name": "Timothy",
-                    "lucky_number": 93
-                }, {
-                    "id": 71,
-                    "name": "Patricia",
-                    "lucky_number": 17
-                }, {
-                    "id": 72,
-                    "name": "Craig",
-                    "lucky_number": 48
-                }, {
-                    "id": 73,
-                    "name": "Philip",
-                    "lucky_number": 88
-                }, {
-                    "id": 74,
-                    "name": "Lori",
-                    "lucky_number": 56
-                }, {
-                    "id": 75,
-                    "name": "Janet",
-                    "lucky_number": 4
-                }, {
-                    "id": 76,
-                    "name": "Denise",
-                    "lucky_number": 30
-                }, {
-                    "id": 77,
-                    "name": "Elizabeth",
-                    "lucky_number": 44
-                }, {
-                    "id": 78,
-                    "name": "Thomas",
-                    "lucky_number": 95
-                }, {
-                    "id": 79,
-                    "name": "Shirley",
-                    "lucky_number": 24
-                }, {
-                    "id": 80,
-                    "name": "Helen",
-                    "lucky_number": 9
-                }, {
-                    "id": 81,
-                    "name": "Wanda",
-                    "lucky_number": 98
-                }, {
-                    "id": 82,
-                    "name": "Ernest",
-                    "lucky_number": 35
-                }, {
-                    "id": 83,
-                    "name": "Steven",
-                    "lucky_number": 9
-                }, {
-                    "id": 84,
-                    "name": "Jose",
-                    "lucky_number": 27
-                }, {
-                    "id": 85,
-                    "name": "Kimberly",
-                    "lucky_number": 52
-                }, {
-                    "id": 86,
-                    "name": "Nancy",
-                    "lucky_number": 48
-                }, {
-                    "id": 87,
-                    "name": "Christopher",
-                    "lucky_number": 44
-                }, {
-                    "id": 88,
-                    "name": "Nancy",
-                    "lucky_number": 40
-                }, {
-                    "id": 89,
-                    "name": "Philip",
-                    "lucky_number": 34
-                }, {
-                    "id": 90,
-                    "name": "Bruce",
-                    "lucky_number": 69
-                }, {
-                    "id": 91,
-                    "name": "Jason",
-                    "lucky_number": 60
-                }, {
-                    "id": 92,
-                    "name": "Denise",
-                    "lucky_number": 30
-                }, {
-                    "id": 93,
-                    "name": "Jane",
-                    "lucky_number": 66
-                }, {
-                    "id": 94,
-                    "name": "Brian",
-                    "lucky_number": 49
-                }, {
-                    "id": 95,
-                    "name": "Eugene",
-                    "lucky_number": 51
-                }, {
-                    "id": 96,
-                    "name": "Jack",
-                    "lucky_number": 97
-                }, {
-                    "id": 97,
-                    "name": "Peter",
-                    "lucky_number": 1
-                }, {
-                    "id": 98,
-                    "name": "Virginia",
-                    "lucky_number": 20
-                }, {
-                    "id": 99,
-                    "name": "Walter",
-                    "lucky_number": 63
-                }, {
-                    "id": 100,
-                    "name": "Virginia",
-                    "lucky_number": 14
+                    'id': 1,
+                    'name': 'Anna',
+                    'lucky_number': 63
+                }, {
+                    'id': 2,
+                    'name': 'Julie',
+                    'lucky_number': 8
+                }, {
+                    'id': 3,
+                    'name': 'Lillian',
+                    'lucky_number': 30
+                }, {
+                    'id': 4,
+                    'name': 'Norma',
+                    'lucky_number': 13
+                }, {
+                    'id': 5,
+                    'name': 'Ralph',
+                    'lucky_number': 28
+                }, {
+                    'id': 6,
+                    'name': 'Benjamin',
+                    'lucky_number': 66
+                }, {
+                    'id': 7,
+                    'name': 'George',
+                    'lucky_number': 66
+                }, {
+                    'id': 8,
+                    'name': 'Ryan',
+                    'lucky_number': 65
+                }, {
+                    'id': 9,
+                    'name': 'Martha',
+                    'lucky_number': 57
+                }, {
+                    'id': 10,
+                    'name': 'Todd',
+                    'lucky_number': 65
+                }, {
+                    'id': 11,
+                    'name': 'Norma',
+                    'lucky_number': 73
+                }, {
+                    'id': 12,
+                    'name': 'Frank',
+                    'lucky_number': 27
+                }, {
+                    'id': 13,
+                    'name': 'Kathryn',
+                    'lucky_number': 93
+                }, {
+                    'id': 14,
+                    'name': 'Philip',
+                    'lucky_number': 63
+                }, {
+                    'id': 15,
+                    'name': 'Ronald',
+                    'lucky_number': 89
+                }, {
+                    'id': 16,
+                    'name': 'Joshua',
+                    'lucky_number': 18
+                }, {
+                    'id': 17,
+                    'name': 'Phillip',
+                    'lucky_number': 16
+                }, {
+                    'id': 18,
+                    'name': 'Susan',
+                    'lucky_number': 6
+                }, {
+                    'id': 19,
+                    'name': 'Louise',
+                    'lucky_number': 52
+                }, {
+                    'id': 20,
+                    'name': 'Gary',
+                    'lucky_number': 18
+                }, {
+                    'id': 21,
+                    'name': 'Laura',
+                    'lucky_number': 9
+                }, {
+                    'id': 22,
+                    'name': 'Tina',
+                    'lucky_number': 70
+                }, {
+                    'id': 23,
+                    'name': 'Jesse',
+                    'lucky_number': 2
+                }, {
+                    'id': 24,
+                    'name': 'Jessica',
+                    'lucky_number': 15
+                }, {
+                    'id': 25,
+                    'name': 'Scott',
+                    'lucky_number': 38
+                }, {
+                    'id': 26,
+                    'name': 'Michael',
+                    'lucky_number': 23
+                }, {
+                    'id': 27,
+                    'name': 'Harold',
+                    'lucky_number': 66
+                }, {
+                    'id': 28,
+                    'name': 'William',
+                    'lucky_number': 57
+                }, {
+                    'id': 29,
+                    'name': 'Harry',
+                    'lucky_number': 14
+                }, {
+                    'id': 30,
+                    'name': 'Dennis',
+                    'lucky_number': 9
+                }, {
+                    'id': 31,
+                    'name': 'Sara',
+                    'lucky_number': 9
+                }, {
+                    'id': 32,
+                    'name': 'David',
+                    'lucky_number': 31
+                }, {
+                    'id': 33,
+                    'name': 'Antonio',
+                    'lucky_number': 2
+                }, {
+                    'id': 34,
+                    'name': 'Anna',
+                    'lucky_number': 85
+                }, {
+                    'id': 35,
+                    'name': 'Earl',
+                    'lucky_number': 98
+                }, {
+                    'id': 36,
+                    'name': 'Melissa',
+                    'lucky_number': 70
+                }, {
+                    'id': 37,
+                    'name': 'Eric',
+                    'lucky_number': 94
+                }, {
+                    'id': 38,
+                    'name': 'Joe',
+                    'lucky_number': 42
+                }, {
+                    'id': 39,
+                    'name': 'Andrea',
+                    'lucky_number': 39
+                }, {
+                    'id': 40,
+                    'name': 'Michael',
+                    'lucky_number': 44
+                }, {
+                    'id': 41,
+                    'name': 'Lillian',
+                    'lucky_number': 10
+                }, {
+                    'id': 42,
+                    'name': 'Elizabeth',
+                    'lucky_number': 24
+                }, {
+                    'id': 43,
+                    'name': 'Ryan',
+                    'lucky_number': 78
+                }, {
+                    'id': 44,
+                    'name': 'Phillip',
+                    'lucky_number': 86
+                }, {
+                    'id': 45,
+                    'name': 'Patrick',
+                    'lucky_number': 64
+                }, {
+                    'id': 46,
+                    'name': 'Barbara',
+                    'lucky_number': 54
+                }, {
+                    'id': 47,
+                    'name': 'Patricia',
+                    'lucky_number': 9
+                }, {
+                    'id': 48,
+                    'name': 'Brenda',
+                    'lucky_number': 18
+                }, {
+                    'id': 49,
+                    'name': 'Sara',
+                    'lucky_number': 12
+                }, {
+                    'id': 50,
+                    'name': 'Steven',
+                    'lucky_number': 50
+                }, {
+                    'id': 51,
+                    'name': 'Steven',
+                    'lucky_number': 44
+                }, {
+                    'id': 52,
+                    'name': 'Paul',
+                    'lucky_number': 88
+                }, {
+                    'id': 53,
+                    'name': 'Ann',
+                    'lucky_number': 51
+                }, {
+                    'id': 54,
+                    'name': 'Frank',
+                    'lucky_number': 3
+                }, {
+                    'id': 55,
+                    'name': 'Beverly',
+                    'lucky_number': 10
+                }, {
+                    'id': 56,
+                    'name': 'Elizabeth',
+                    'lucky_number': 52
+                }, {
+                    'id': 57,
+                    'name': 'Patrick',
+                    'lucky_number': 96
+                }, {
+                    'id': 58,
+                    'name': 'Susan',
+                    'lucky_number': 92
+                }, {
+                    'id': 59,
+                    'name': 'Lawrence',
+                    'lucky_number': 53
+                }, {
+                    'id': 60,
+                    'name': 'Denise',
+                    'lucky_number': 65
+                }, {
+                    'id': 61,
+                    'name': 'Carol',
+                    'lucky_number': 33
+                }, {
+                    'id': 62,
+                    'name': 'Larry',
+                    'lucky_number': 95
+                }, {
+                    'id': 63,
+                    'name': 'Martha',
+                    'lucky_number': 32
+                }, {
+                    'id': 64,
+                    'name': 'Steve',
+                    'lucky_number': 69
+                }, {
+                    'id': 65,
+                    'name': 'Timothy',
+                    'lucky_number': 16
+                }, {
+                    'id': 66,
+                    'name': 'Jose',
+                    'lucky_number': 16
+                }, {
+                    'id': 67,
+                    'name': 'Jennifer',
+                    'lucky_number': 96
+                }, {
+                    'id': 68,
+                    'name': 'Benjamin',
+                    'lucky_number': 20
+                }, {
+                    'id': 69,
+                    'name': 'Christine',
+                    'lucky_number': 8
+                }, {
+                    'id': 70,
+                    'name': 'Timothy',
+                    'lucky_number': 93
+                }, {
+                    'id': 71,
+                    'name': 'Patricia',
+                    'lucky_number': 17
+                }, {
+                    'id': 72,
+                    'name': 'Craig',
+                    'lucky_number': 48
+                }, {
+                    'id': 73,
+                    'name': 'Philip',
+                    'lucky_number': 88
+                }, {
+                    'id': 74,
+                    'name': 'Lori',
+                    'lucky_number': 56
+                }, {
+                    'id': 75,
+                    'name': 'Janet',
+                    'lucky_number': 4
+                }, {
+                    'id': 76,
+                    'name': 'Denise',
+                    'lucky_number': 30
+                }, {
+                    'id': 77,
+                    'name': 'Elizabeth',
+                    'lucky_number': 44
+                }, {
+                    'id': 78,
+                    'name': 'Thomas',
+                    'lucky_number': 95
+                }, {
+                    'id': 79,
+                    'name': 'Shirley',
+                    'lucky_number': 24
+                }, {
+                    'id': 80,
+                    'name': 'Helen',
+                    'lucky_number': 9
+                }, {
+                    'id': 81,
+                    'name': 'Wanda',
+                    'lucky_number': 98
+                }, {
+                    'id': 82,
+                    'name': 'Ernest',
+                    'lucky_number': 35
+                }, {
+                    'id': 83,
+                    'name': 'Steven',
+                    'lucky_number': 9
+                }, {
+                    'id': 84,
+                    'name': 'Jose',
+                    'lucky_number': 27
+                }, {
+                    'id': 85,
+                    'name': 'Kimberly',
+                    'lucky_number': 52
+                }, {
+                    'id': 86,
+                    'name': 'Nancy',
+                    'lucky_number': 48
+                }, {
+                    'id': 87,
+                    'name': 'Christopher',
+                    'lucky_number': 44
+                }, {
+                    'id': 88,
+                    'name': 'Nancy',
+                    'lucky_number': 40
+                }, {
+                    'id': 89,
+                    'name': 'Philip',
+                    'lucky_number': 34
+                }, {
+                    'id': 90,
+                    'name': 'Bruce',
+                    'lucky_number': 69
+                }, {
+                    'id': 91,
+                    'name': 'Jason',
+                    'lucky_number': 60
+                }, {
+                    'id': 92,
+                    'name': 'Denise',
+                    'lucky_number': 30
+                }, {
+                    'id': 93,
+                    'name': 'Jane',
+                    'lucky_number': 66
+                }, {
+                    'id': 94,
+                    'name': 'Brian',
+                    'lucky_number': 49
+                }, {
+                    'id': 95,
+                    'name': 'Eugene',
+                    'lucky_number': 51
+                }, {
+                    'id': 96,
+                    'name': 'Jack',
+                    'lucky_number': 97
+                }, {
+                    'id': 97,
+                    'name': 'Peter',
+                    'lucky_number': 1
+                }, {
+                    'id': 98,
+                    'name': 'Virginia',
+                    'lucky_number': 20
+                }, {
+                    'id': 99,
+                    'name': 'Walter',
+                    'lucky_number': 63
+                }, {
+                    'id': 100,
+                    'name': 'Virginia',
+                    'lucky_number': 14
                 }]
         };
     }
@@ -1814,7 +1891,7 @@ var BasicComponent = (function () {
 BasicComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-basic',
-        template: __webpack_require__(438)
+        template: __webpack_require__(440)
     }),
     __metadata("design:paramtypes", [])
 ], BasicComponent);
@@ -1823,7 +1900,7 @@ BasicComponent = __decorate([
 
 /***/ }),
 
-/***/ 325:
+/***/ 326:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1842,165 +1919,165 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ChangeColumnSettingsComponent = (function () {
     function ChangeColumnSettingsComponent() {
         var data = [{
-                "id": 1,
-                "first_name": "Ashley",
-                "last_name": "Hansen",
-                "email": "ahansen0@sourceforge.net",
-                "gender": "Female",
-                "ip_address": "42.196.237.110",
-                "company": "Flipbug",
-                "country": "Serbia",
-                "favorite_color": "#d759f6",
-                "job_title": "Legal Assistant",
-                "phone": "381-(690)132-2252",
-                "username": "ahansen0",
-                "time_zone": "Europe/Belgrade",
-                "profile_img": "http://dummyimage.com/242x179.png/dddddd/000000",
-                "birthday": "1955-06-10"
+                'id': 1,
+                'first_name': 'Ashley',
+                'last_name': 'Hansen',
+                'email': 'ahansen0@sourceforge.net',
+                'gender': 'Female',
+                'ip_address': '42.196.237.110',
+                'company': 'Flipbug',
+                'country': 'Serbia',
+                'favorite_color': '#d759f6',
+                'job_title': 'Legal Assistant',
+                'phone': '381-(690)132-2252',
+                'username': 'ahansen0',
+                'time_zone': 'Europe/Belgrade',
+                'profile_img': 'http://dummyimage.com/242x179.png/dddddd/000000',
+                'birthday': '1955-06-10'
             }, {
-                "id": 2,
-                "first_name": "Lillian",
-                "last_name": "Chavez",
-                "email": "lchavez1@fda.gov",
-                "gender": "Female",
-                "ip_address": "249.252.103.90",
-                "company": "Ainyx",
-                "country": "United States",
-                "favorite_color": "#1db85c",
-                "job_title": "Engineer II",
-                "phone": "1-(763)807-2351",
-                "username": "lchavez1",
-                "time_zone": "America/Chicago",
-                "profile_img": "http://dummyimage.com/108x153.jpg/5fa2dd/ffffff",
-                "birthday": "2006-08-27"
+                'id': 2,
+                'first_name': 'Lillian',
+                'last_name': 'Chavez',
+                'email': 'lchavez1@fda.gov',
+                'gender': 'Female',
+                'ip_address': '249.252.103.90',
+                'company': 'Ainyx',
+                'country': 'United States',
+                'favorite_color': '#1db85c',
+                'job_title': 'Engineer II',
+                'phone': '1-(763)807-2351',
+                'username': 'lchavez1',
+                'time_zone': 'America/Chicago',
+                'profile_img': 'http://dummyimage.com/108x153.jpg/5fa2dd/ffffff',
+                'birthday': '2006-08-27'
             }, {
-                "id": 3,
-                "first_name": "Cynthia",
-                "last_name": "Stanley",
-                "email": "cstanley2@engadget.com",
-                "gender": "Female",
-                "ip_address": "129.246.83.246",
-                "company": "Centimia",
-                "country": "Indonesia",
-                "favorite_color": "#f59430",
-                "job_title": "Developer IV",
-                "phone": "62-(734)705-4841",
-                "username": "cstanley2",
-                "time_zone": "Asia/Jakarta",
-                "profile_img": "http://dummyimage.com/117x160.bmp/ff4444/ffffff",
-                "birthday": "1986-11-04"
+                'id': 3,
+                'first_name': 'Cynthia',
+                'last_name': 'Stanley',
+                'email': 'cstanley2@engadget.com',
+                'gender': 'Female',
+                'ip_address': '129.246.83.246',
+                'company': 'Centimia',
+                'country': 'Indonesia',
+                'favorite_color': '#f59430',
+                'job_title': 'Developer IV',
+                'phone': '62-(734)705-4841',
+                'username': 'cstanley2',
+                'time_zone': 'Asia/Jakarta',
+                'profile_img': 'http://dummyimage.com/117x160.bmp/ff4444/ffffff',
+                'birthday': '1986-11-04'
             }, {
-                "id": 4,
-                "first_name": "Andrea",
-                "last_name": "Fisher",
-                "email": "afisher3@dion.ne.jp",
-                "gender": "Female",
-                "ip_address": "116.22.133.176",
-                "company": "Wikizz",
-                "country": "Norway",
-                "favorite_color": "#953de7",
-                "job_title": "Computer Systems Analyst III",
-                "phone": "47-(288)254-2574",
-                "username": "afisher3",
-                "time_zone": "Europe/Oslo",
-                "profile_img": "http://dummyimage.com/107x151.jpg/5fa2dd/ffffff",
-                "birthday": "1999-06-16"
+                'id': 4,
+                'first_name': 'Andrea',
+                'last_name': 'Fisher',
+                'email': 'afisher3@dion.ne.jp',
+                'gender': 'Female',
+                'ip_address': '116.22.133.176',
+                'company': 'Wikizz',
+                'country': 'Norway',
+                'favorite_color': '#953de7',
+                'job_title': 'Computer Systems Analyst III',
+                'phone': '47-(288)254-2574',
+                'username': 'afisher3',
+                'time_zone': 'Europe/Oslo',
+                'profile_img': 'http://dummyimage.com/107x151.jpg/5fa2dd/ffffff',
+                'birthday': '1999-06-16'
             }, {
-                "id": 5,
-                "first_name": "Russell",
-                "last_name": "Sanders",
-                "email": "rsanders4@dmoz.org",
-                "gender": "Male",
-                "ip_address": "213.4.47.227",
-                "company": "Youspan",
-                "country": "China",
-                "favorite_color": "#299b7f",
-                "job_title": "Desktop Support Technician",
-                "phone": "86-(811)544-1191",
-                "username": "rsanders4",
-                "time_zone": "Asia/Chongqing",
-                "profile_img": "http://dummyimage.com/159x211.png/ff4444/ffffff",
-                "birthday": "1994-01-25"
+                'id': 5,
+                'first_name': 'Russell',
+                'last_name': 'Sanders',
+                'email': 'rsanders4@dmoz.org',
+                'gender': 'Male',
+                'ip_address': '213.4.47.227',
+                'company': 'Youspan',
+                'country': 'China',
+                'favorite_color': '#299b7f',
+                'job_title': 'Desktop Support Technician',
+                'phone': '86-(811)544-1191',
+                'username': 'rsanders4',
+                'time_zone': 'Asia/Chongqing',
+                'profile_img': 'http://dummyimage.com/159x211.png/ff4444/ffffff',
+                'birthday': '1994-01-25'
             }, {
-                "id": 6,
-                "first_name": "Willie",
-                "last_name": "Morris",
-                "email": "wmorris5@huffingtonpost.com",
-                "gender": "Male",
-                "ip_address": "237.255.190.122",
-                "company": "Eidel",
-                "country": "China",
-                "favorite_color": "#962f03",
-                "job_title": "Marketing Manager",
-                "phone": "86-(583)894-9258",
-                "username": "wmorris5",
-                "time_zone": "Asia/Chongqing",
-                "profile_img": "http://dummyimage.com/115x126.png/5fa2dd/ffffff",
-                "birthday": "1998-09-21"
+                'id': 6,
+                'first_name': 'Willie',
+                'last_name': 'Morris',
+                'email': 'wmorris5@huffingtonpost.com',
+                'gender': 'Male',
+                'ip_address': '237.255.190.122',
+                'company': 'Eidel',
+                'country': 'China',
+                'favorite_color': '#962f03',
+                'job_title': 'Marketing Manager',
+                'phone': '86-(583)894-9258',
+                'username': 'wmorris5',
+                'time_zone': 'Asia/Chongqing',
+                'profile_img': 'http://dummyimage.com/115x126.png/5fa2dd/ffffff',
+                'birthday': '1998-09-21'
             }, {
-                "id": 7,
-                "first_name": "Christine",
-                "last_name": "Hanson",
-                "email": "chanson6@reddit.com",
-                "gender": "Female",
-                "ip_address": "232.250.153.126",
-                "company": "Twimm",
-                "country": "United States",
-                "favorite_color": "#0987a6",
-                "job_title": "Legal Assistant",
-                "phone": "1-(414)281-7119",
-                "username": "chanson6",
-                "time_zone": "America/Chicago",
-                "profile_img": "http://dummyimage.com/188x237.png/dddddd/000000",
-                "birthday": "1986-10-01"
+                'id': 7,
+                'first_name': 'Christine',
+                'last_name': 'Hanson',
+                'email': 'chanson6@reddit.com',
+                'gender': 'Female',
+                'ip_address': '232.250.153.126',
+                'company': 'Twimm',
+                'country': 'United States',
+                'favorite_color': '#0987a6',
+                'job_title': 'Legal Assistant',
+                'phone': '1-(414)281-7119',
+                'username': 'chanson6',
+                'time_zone': 'America/Chicago',
+                'profile_img': 'http://dummyimage.com/188x237.png/dddddd/000000',
+                'birthday': '1986-10-01'
             }, {
-                "id": 8,
-                "first_name": "William",
-                "last_name": "Kelly",
-                "email": "wkelly7@geocities.com",
-                "gender": "Male",
-                "ip_address": "64.103.175.253",
-                "company": "Leenti",
-                "country": "Poland",
-                "favorite_color": "#b654b6",
-                "job_title": "Director of Sales",
-                "phone": "48-(971)291-9791",
-                "username": "wkelly7",
-                "time_zone": "Europe/Warsaw",
-                "profile_img": "http://dummyimage.com/247x134.bmp/ff4444/ffffff",
-                "birthday": "1987-05-03"
+                'id': 8,
+                'first_name': 'William',
+                'last_name': 'Kelly',
+                'email': 'wkelly7@geocities.com',
+                'gender': 'Male',
+                'ip_address': '64.103.175.253',
+                'company': 'Leenti',
+                'country': 'Poland',
+                'favorite_color': '#b654b6',
+                'job_title': 'Director of Sales',
+                'phone': '48-(971)291-9791',
+                'username': 'wkelly7',
+                'time_zone': 'Europe/Warsaw',
+                'profile_img': 'http://dummyimage.com/247x134.bmp/ff4444/ffffff',
+                'birthday': '1987-05-03'
             }, {
-                "id": 9,
-                "first_name": "Adam",
-                "last_name": "Hayes",
-                "email": "ahayes8@nps.gov",
-                "gender": "Male",
-                "ip_address": "247.136.87.110",
-                "company": "Dynava",
-                "country": "Bulgaria",
-                "favorite_color": "#2cef3b",
-                "job_title": "Structural Analysis Engineer",
-                "phone": "359-(547)536-5941",
-                "username": "ahayes8",
-                "time_zone": "Europe/Sofia",
-                "profile_img": "http://dummyimage.com/163x109.png/5fa2dd/ffffff",
-                "birthday": "2002-11-17"
+                'id': 9,
+                'first_name': 'Adam',
+                'last_name': 'Hayes',
+                'email': 'ahayes8@nps.gov',
+                'gender': 'Male',
+                'ip_address': '247.136.87.110',
+                'company': 'Dynava',
+                'country': 'Bulgaria',
+                'favorite_color': '#2cef3b',
+                'job_title': 'Structural Analysis Engineer',
+                'phone': '359-(547)536-5941',
+                'username': 'ahayes8',
+                'time_zone': 'Europe/Sofia',
+                'profile_img': 'http://dummyimage.com/163x109.png/5fa2dd/ffffff',
+                'birthday': '2002-11-17'
             }, {
-                "id": 10,
-                "first_name": "Todd",
-                "last_name": "Rogers",
-                "email": "trogers9@noaa.gov",
-                "gender": "Male",
-                "ip_address": "187.9.242.198",
-                "company": "Bluezoom",
-                "country": "Portugal",
-                "favorite_color": "#f79ea6",
-                "job_title": "Quality Engineer",
-                "phone": "351-(257)713-6978",
-                "username": "trogers9",
-                "time_zone": "Europe/Lisbon",
-                "profile_img": "http://dummyimage.com/155x172.jpg/ff4444/ffffff",
-                "birthday": "1969-12-27"
+                'id': 10,
+                'first_name': 'Todd',
+                'last_name': 'Rogers',
+                'email': 'trogers9@noaa.gov',
+                'gender': 'Male',
+                'ip_address': '187.9.242.198',
+                'company': 'Bluezoom',
+                'country': 'Portugal',
+                'favorite_color': '#f79ea6',
+                'job_title': 'Quality Engineer',
+                'phone': '351-(257)713-6978',
+                'username': 'trogers9',
+                'time_zone': 'Europe/Lisbon',
+                'profile_img': 'http://dummyimage.com/155x172.jpg/ff4444/ffffff',
+                'birthday': '1969-12-27'
             }];
         this.firstConfigObject = { settings: this.getBaseSettings(), fields: this.getBaseFields(), data: data };
         this.secondConfigObject = { settings: this.getBaseSettings(), fields: this.getBaseFields(), data: data };
@@ -2105,7 +2182,7 @@ var ChangeColumnSettingsComponent = (function () {
 ChangeColumnSettingsComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'change-column-settings',
-        template: __webpack_require__(439)
+        template: __webpack_require__(441)
     }),
     __metadata("design:paramtypes", [])
 ], ChangeColumnSettingsComponent);
@@ -2114,7 +2191,7 @@ ChangeColumnSettingsComponent = __decorate([
 
 /***/ }),
 
-/***/ 326:
+/***/ 327:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2123,15 +2200,15 @@ ChangeColumnSettingsComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_BehaviorSubject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_BehaviorSubject__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_delay__ = __webpack_require__(341);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_delay__ = __webpack_require__(343);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_delay___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_delay__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_do__ = __webpack_require__(342);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_do__ = __webpack_require__(344);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_do___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_do__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_filter__ = __webpack_require__(343);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_filter__ = __webpack_require__(345);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_filter__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rxjs_add_operator_scan__ = __webpack_require__(345);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rxjs_add_operator_scan__ = __webpack_require__(347);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rxjs_add_operator_scan___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_rxjs_add_operator_scan__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rxjs_add_operator_startWith__ = __webpack_require__(347);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rxjs_add_operator_startWith__ = __webpack_require__(349);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rxjs_add_operator_startWith___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_rxjs_add_operator_startWith__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_rxjs_add_operator_take__ = __webpack_require__(307);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_rxjs_add_operator_take___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_rxjs_add_operator_take__);
@@ -2419,7 +2496,7 @@ var CustomColumnComponent = (function () {
 CustomColumnComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-custom-column',
-        template: __webpack_require__(440),
+        template: __webpack_require__(442),
         providers: [EditService, StateService]
     }),
     __metadata("design:paramtypes", [EditService,
@@ -2430,7 +2507,7 @@ CustomColumnComponent = __decorate([
 
 /***/ }),
 
-/***/ 327:
+/***/ 328:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2456,8 +2533,8 @@ var HomeComponent = (function () {
 HomeComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'home',
-        template: __webpack_require__(443),
-        styles: [__webpack_require__(433)]
+        template: __webpack_require__(445),
+        styles: [__webpack_require__(435)]
     }),
     __metadata("design:paramtypes", [])
 ], HomeComponent);
@@ -2466,7 +2543,389 @@ HomeComponent = __decorate([
 
 /***/ }),
 
-/***/ 328:
+/***/ 329:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(3);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InlineEditingComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var InlineEditingComponent = (function () {
+    function InlineEditingComponent() {
+        var _this = this;
+        this.data = [];
+        this.languages = ['Albanian', 'Amharic', 'Aymara', 'Bulgarian', 'Dhivehi', 'Estonian', 'Indonesian', 'Kannada', 'Lao', 'Latvian', 'Marathi', 'Persian', 'Pisin', 'Punjabi', 'Somali', 'Tamil', 'Tok', 'Tsonga', 'Tswana', 'Zulu'];
+        /** Listen for events
+         * */
+        this.trigger = function ($event) {
+            console.log($event);
+            if ($event.value && $event.name === 'gt-row-updated') {
+                this.updatedRow = $event.value;
+            }
+        };
+        this.configObject = {
+            settings: [{
+                    objectKey: 'id',
+                    sort: 'asc',
+                    sortOrder: 1,
+                    columnOrder: 0
+                }, {
+                    objectKey: 'name',
+                    sort: 'asc',
+                    sortOrder: 0,
+                    columnOrder: 1
+                }, {
+                    objectKey: 'language',
+                    sort: 'enable',
+                    columnOrder: 3,
+                    visible: true
+                }],
+            fields: [{
+                    name: 'Id',
+                    objectKey: 'id'
+                }, {
+                    name: 'Name',
+                    objectKey: 'name',
+                    inlineEdit: true
+                }, {
+                    name: 'Language',
+                    objectKey: 'language',
+                    inlineEdit: this.languages,
+                    value: function () {
+                        var langId = Math.floor(Math.random() * _this.languages.length);
+                        return _this.languages[langId];
+                    }
+                }],
+            data: [{
+                    'id': 1,
+                    'name': 'Anna'
+                }, {
+                    'id': 2,
+                    'name': 'Julie'
+                }, {
+                    'id': 3,
+                    'name': 'Lillian'
+                }, {
+                    'id': 4,
+                    'name': 'Norma'
+                }, {
+                    'id': 5,
+                    'name': 'Ralph'
+                }, {
+                    'id': 6,
+                    'name': 'Benjamin'
+                }, {
+                    'id': 7,
+                    'name': 'George'
+                }, {
+                    'id': 8,
+                    'name': 'Ryan'
+                }, {
+                    'id': 9,
+                    'name': 'Martha'
+                }, {
+                    'id': 10,
+                    'name': 'Todd'
+                }, {
+                    'id': 11,
+                    'name': 'Norma'
+                }, {
+                    'id': 12,
+                    'name': 'Frank'
+                }, {
+                    'id': 13,
+                    'name': 'Kathryn'
+                }, {
+                    'id': 14,
+                    'name': 'Philip'
+                }, {
+                    'id': 15,
+                    'name': 'Ronald'
+                }, {
+                    'id': 16,
+                    'name': 'Joshua'
+                }, {
+                    'id': 17,
+                    'name': 'Phillip'
+                }, {
+                    'id': 18,
+                    'name': 'Susan'
+                }, {
+                    'id': 19,
+                    'name': 'Louise'
+                }, {
+                    'id': 20,
+                    'name': 'Gary'
+                }, {
+                    'id': 21,
+                    'name': 'Laura'
+                }, {
+                    'id': 22,
+                    'name': 'Tina'
+                }, {
+                    'id': 23,
+                    'name': 'Jesse'
+                }, {
+                    'id': 24,
+                    'name': 'Jessica'
+                }, {
+                    'id': 25,
+                    'name': 'Scott'
+                }, {
+                    'id': 26,
+                    'name': 'Michael'
+                }, {
+                    'id': 27,
+                    'name': 'Harold'
+                }, {
+                    'id': 28,
+                    'name': 'William'
+                }, {
+                    'id': 29,
+                    'name': 'Harry'
+                }, {
+                    'id': 30,
+                    'name': 'Dennis'
+                }, {
+                    'id': 31,
+                    'name': 'Sara'
+                }, {
+                    'id': 32,
+                    'name': 'David'
+                }, {
+                    'id': 33,
+                    'name': 'Antonio'
+                }, {
+                    'id': 34,
+                    'name': 'Anna'
+                }, {
+                    'id': 35,
+                    'name': 'Earl'
+                }, {
+                    'id': 36,
+                    'name': 'Melissa'
+                }, {
+                    'id': 37,
+                    'name': 'Eric'
+                }, {
+                    'id': 38,
+                    'name': 'Joe'
+                }, {
+                    'id': 39,
+                    'name': 'Andrea'
+                }, {
+                    'id': 40,
+                    'name': 'Michael'
+                }, {
+                    'id': 41,
+                    'name': 'Lillian'
+                }, {
+                    'id': 42,
+                    'name': 'Elizabeth'
+                }, {
+                    'id': 43,
+                    'name': 'Ryan'
+                }, {
+                    'id': 44,
+                    'name': 'Phillip'
+                }, {
+                    'id': 45,
+                    'name': 'Patrick'
+                }, {
+                    'id': 46,
+                    'name': 'Barbara'
+                }, {
+                    'id': 47,
+                    'name': 'Patricia'
+                }, {
+                    'id': 48,
+                    'name': 'Brenda'
+                }, {
+                    'id': 49,
+                    'name': 'Sara'
+                }, {
+                    'id': 50,
+                    'name': 'Steven'
+                }, {
+                    'id': 51,
+                    'name': 'Steven'
+                }, {
+                    'id': 52,
+                    'name': 'Paul'
+                }, {
+                    'id': 53,
+                    'name': 'Ann'
+                }, {
+                    'id': 54,
+                    'name': 'Frank'
+                }, {
+                    'id': 55,
+                    'name': 'Beverly'
+                }, {
+                    'id': 56,
+                    'name': 'Elizabeth'
+                }, {
+                    'id': 57,
+                    'name': 'Patrick'
+                }, {
+                    'id': 58,
+                    'name': 'Susan'
+                }, {
+                    'id': 59,
+                    'name': 'Lawrence'
+                }, {
+                    'id': 60,
+                    'name': 'Denise'
+                }, {
+                    'id': 61,
+                    'name': 'Carol'
+                }, {
+                    'id': 62,
+                    'name': 'Larry'
+                }, {
+                    'id': 63,
+                    'name': 'Martha'
+                }, {
+                    'id': 64,
+                    'name': 'Steve'
+                }, {
+                    'id': 65,
+                    'name': 'Timothy'
+                }, {
+                    'id': 66,
+                    'name': 'Jose'
+                }, {
+                    'id': 67,
+                    'name': 'Jennifer'
+                }, {
+                    'id': 68,
+                    'name': 'Benjamin'
+                }, {
+                    'id': 69,
+                    'name': 'Christine'
+                }, {
+                    'id': 70,
+                    'name': 'Timothy'
+                }, {
+                    'id': 71,
+                    'name': 'Patricia'
+                }, {
+                    'id': 72,
+                    'name': 'Craig'
+                }, {
+                    'id': 73,
+                    'name': 'Philip'
+                }, {
+                    'id': 74,
+                    'name': 'Lori'
+                }, {
+                    'id': 75,
+                    'name': 'Janet'
+                }, {
+                    'id': 76,
+                    'name': 'Denise'
+                }, {
+                    'id': 77,
+                    'name': 'Elizabeth'
+                }, {
+                    'id': 78,
+                    'name': 'Thomas'
+                }, {
+                    'id': 79,
+                    'name': 'Shirley'
+                }, {
+                    'id': 80,
+                    'name': 'Helen'
+                }, {
+                    'id': 81,
+                    'name': 'Wanda'
+                }, {
+                    'id': 82,
+                    'name': 'Ernest'
+                }, {
+                    'id': 83,
+                    'name': 'Steven'
+                }, {
+                    'id': 84,
+                    'name': 'Jose'
+                }, {
+                    'id': 85,
+                    'name': 'Kimberly'
+                }, {
+                    'id': 86,
+                    'name': 'Nancy'
+                }, {
+                    'id': 87,
+                    'name': 'Christopher'
+                }, {
+                    'id': 88,
+                    'name': 'Nancy'
+                }, {
+                    'id': 89,
+                    'name': 'Philip'
+                }, {
+                    'id': 90,
+                    'name': 'Bruce'
+                }, {
+                    'id': 91,
+                    'name': 'Jason'
+                }, {
+                    'id': 92,
+                    'name': 'Denise'
+                }, {
+                    'id': 93,
+                    'name': 'Jane'
+                }, {
+                    'id': 94,
+                    'name': 'Brian'
+                }, {
+                    'id': 95,
+                    'name': 'Eugene'
+                }, {
+                    'id': 96,
+                    'name': 'Jack'
+                }, {
+                    'id': 97,
+                    'name': 'Peter'
+                }, {
+                    'id': 98,
+                    'name': 'Virginia'
+                }, {
+                    'id': 99,
+                    'name': 'Walter'
+                }, {
+                    'id': 100,
+                    'name': 'Virginia'
+                }]
+        };
+    }
+    InlineEditingComponent.prototype.logData = function () {
+        console.log(this.configObject.data);
+    };
+    return InlineEditingComponent;
+}());
+InlineEditingComponent = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'inline-editing',
+        template: __webpack_require__(446)
+    }),
+    __metadata("design:paramtypes", [])
+], InlineEditingComponent);
+
+//# sourceMappingURL=inline-editing.component.js.map
+
+/***/ }),
+
+/***/ 330:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2613,7 +3072,7 @@ __decorate([
 LazyComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-lazy',
-        template: __webpack_require__(444)
+        template: __webpack_require__(447)
     }),
     __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"]) === "function" && _b || Object])
 ], LazyComponent);
@@ -2623,12 +3082,12 @@ var _a, _b;
 
 /***/ }),
 
-/***/ 329:
+/***/ 331:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ngx_translate_core__ = __webpack_require__(331);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ngx_translate_core__ = __webpack_require__(333);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LocalizationComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2646,7 +3105,7 @@ var LocalizationComponent = (function () {
         var _this = this;
         this.translate = translate;
         this.data = [];
-        translate.addLangs(["en", "sv"]);
+        translate.addLangs(['en', 'sv']);
         translate.setDefaultLang('en');
         /*translate.get('HOME.SELECT').subscribe((res)=>
          this.mytext = res
@@ -2694,405 +3153,405 @@ var LocalizationComponent = (function () {
                         stackedHeading: 'Custom heading'
                     }],
                 data: [{
-                        "id": 1,
-                        "name": "Anna",
-                        "lucky_number": 63
-                    }, {
-                        "id": 2,
-                        "name": "Julie",
-                        "lucky_number": 8
-                    }, {
-                        "id": 3,
-                        "name": "Lillian",
-                        "lucky_number": 30
-                    }, {
-                        "id": 4,
-                        "name": "Norma",
-                        "lucky_number": 13
-                    }, {
-                        "id": 5,
-                        "name": "Ralph",
-                        "lucky_number": 28
-                    }, {
-                        "id": 6,
-                        "name": "Benjamin",
-                        "lucky_number": 66
-                    }, {
-                        "id": 7,
-                        "name": "George",
-                        "lucky_number": 66
-                    }, {
-                        "id": 8,
-                        "name": "Ryan",
-                        "lucky_number": 65
-                    }, {
-                        "id": 9,
-                        "name": "Martha",
-                        "lucky_number": 57
-                    }, {
-                        "id": 10,
-                        "name": "Todd",
-                        "lucky_number": 65
-                    }, {
-                        "id": 11,
-                        "name": "Norma",
-                        "lucky_number": 73
-                    }, {
-                        "id": 12,
-                        "name": "Frank",
-                        "lucky_number": 27
-                    }, {
-                        "id": 13,
-                        "name": "Kathryn",
-                        "lucky_number": 93
-                    }, {
-                        "id": 14,
-                        "name": "Philip",
-                        "lucky_number": 63
-                    }, {
-                        "id": 15,
-                        "name": "Ronald",
-                        "lucky_number": 89
-                    }, {
-                        "id": 16,
-                        "name": "Joshua",
-                        "lucky_number": 18
-                    }, {
-                        "id": 17,
-                        "name": "Phillip",
-                        "lucky_number": 16
-                    }, {
-                        "id": 18,
-                        "name": "Susan",
-                        "lucky_number": 6
-                    }, {
-                        "id": 19,
-                        "name": "Louise",
-                        "lucky_number": 52
-                    }, {
-                        "id": 20,
-                        "name": "Gary",
-                        "lucky_number": 18
-                    }, {
-                        "id": 21,
-                        "name": "Laura",
-                        "lucky_number": 9
-                    }, {
-                        "id": 22,
-                        "name": "Tina",
-                        "lucky_number": 70
-                    }, {
-                        "id": 23,
-                        "name": "Jesse",
-                        "lucky_number": 2
-                    }, {
-                        "id": 24,
-                        "name": "Jessica",
-                        "lucky_number": 15
-                    }, {
-                        "id": 25,
-                        "name": "Scott",
-                        "lucky_number": 38
-                    }, {
-                        "id": 26,
-                        "name": "Michael",
-                        "lucky_number": 23
-                    }, {
-                        "id": 27,
-                        "name": "Harold",
-                        "lucky_number": 66
-                    }, {
-                        "id": 28,
-                        "name": "William",
-                        "lucky_number": 57
-                    }, {
-                        "id": 29,
-                        "name": "Harry",
-                        "lucky_number": 14
-                    }, {
-                        "id": 30,
-                        "name": "Dennis",
-                        "lucky_number": 9
-                    }, {
-                        "id": 31,
-                        "name": "Sara",
-                        "lucky_number": 9
-                    }, {
-                        "id": 32,
-                        "name": "David",
-                        "lucky_number": 31
-                    }, {
-                        "id": 33,
-                        "name": "Antonio",
-                        "lucky_number": 2
-                    }, {
-                        "id": 34,
-                        "name": "Anna",
-                        "lucky_number": 85
-                    }, {
-                        "id": 35,
-                        "name": "Earl",
-                        "lucky_number": 98
-                    }, {
-                        "id": 36,
-                        "name": "Melissa",
-                        "lucky_number": 70
-                    }, {
-                        "id": 37,
-                        "name": "Eric",
-                        "lucky_number": 94
-                    }, {
-                        "id": 38,
-                        "name": "Joe",
-                        "lucky_number": 42
-                    }, {
-                        "id": 39,
-                        "name": "Andrea",
-                        "lucky_number": 39
-                    }, {
-                        "id": 40,
-                        "name": "Michael",
-                        "lucky_number": 44
-                    }, {
-                        "id": 41,
-                        "name": "Lillian",
-                        "lucky_number": 10
-                    }, {
-                        "id": 42,
-                        "name": "Elizabeth",
-                        "lucky_number": 24
-                    }, {
-                        "id": 43,
-                        "name": "Ryan",
-                        "lucky_number": 78
-                    }, {
-                        "id": 44,
-                        "name": "Phillip",
-                        "lucky_number": 86
-                    }, {
-                        "id": 45,
-                        "name": "Patrick",
-                        "lucky_number": 64
-                    }, {
-                        "id": 46,
-                        "name": "Barbara",
-                        "lucky_number": 54
-                    }, {
-                        "id": 47,
-                        "name": "Patricia",
-                        "lucky_number": 9
-                    }, {
-                        "id": 48,
-                        "name": "Brenda",
-                        "lucky_number": 18
-                    }, {
-                        "id": 49,
-                        "name": "Sara",
-                        "lucky_number": 12
-                    }, {
-                        "id": 50,
-                        "name": "Steven",
-                        "lucky_number": 50
-                    }, {
-                        "id": 51,
-                        "name": "Steven",
-                        "lucky_number": 44
-                    }, {
-                        "id": 52,
-                        "name": "Paul",
-                        "lucky_number": 88
-                    }, {
-                        "id": 53,
-                        "name": "Ann",
-                        "lucky_number": 51
-                    }, {
-                        "id": 54,
-                        "name": "Frank",
-                        "lucky_number": 3
-                    }, {
-                        "id": 55,
-                        "name": "Beverly",
-                        "lucky_number": 10
-                    }, {
-                        "id": 56,
-                        "name": "Elizabeth",
-                        "lucky_number": 52
-                    }, {
-                        "id": 57,
-                        "name": "Patrick",
-                        "lucky_number": 96
-                    }, {
-                        "id": 58,
-                        "name": "Susan",
-                        "lucky_number": 92
-                    }, {
-                        "id": 59,
-                        "name": "Lawrence",
-                        "lucky_number": 53
-                    }, {
-                        "id": 60,
-                        "name": "Denise",
-                        "lucky_number": 65
-                    }, {
-                        "id": 61,
-                        "name": "Carol",
-                        "lucky_number": 33
-                    }, {
-                        "id": 62,
-                        "name": "Larry",
-                        "lucky_number": 95
-                    }, {
-                        "id": 63,
-                        "name": "Martha",
-                        "lucky_number": 32
-                    }, {
-                        "id": 64,
-                        "name": "Steve",
-                        "lucky_number": 69
-                    }, {
-                        "id": 65,
-                        "name": "Timothy",
-                        "lucky_number": 16
-                    }, {
-                        "id": 66,
-                        "name": "Jose",
-                        "lucky_number": 16
-                    }, {
-                        "id": 67,
-                        "name": "Jennifer",
-                        "lucky_number": 96
-                    }, {
-                        "id": 68,
-                        "name": "Benjamin",
-                        "lucky_number": 20
-                    }, {
-                        "id": 69,
-                        "name": "Christine",
-                        "lucky_number": 8
-                    }, {
-                        "id": 70,
-                        "name": "Timothy",
-                        "lucky_number": 93
-                    }, {
-                        "id": 71,
-                        "name": "Patricia",
-                        "lucky_number": 17
-                    }, {
-                        "id": 72,
-                        "name": "Craig",
-                        "lucky_number": 48
-                    }, {
-                        "id": 73,
-                        "name": "Philip",
-                        "lucky_number": 88
-                    }, {
-                        "id": 74,
-                        "name": "Lori",
-                        "lucky_number": 56
-                    }, {
-                        "id": 75,
-                        "name": "Janet",
-                        "lucky_number": 4
-                    }, {
-                        "id": 76,
-                        "name": "Denise",
-                        "lucky_number": 30
-                    }, {
-                        "id": 77,
-                        "name": "Elizabeth",
-                        "lucky_number": 44
-                    }, {
-                        "id": 78,
-                        "name": "Thomas",
-                        "lucky_number": 95
-                    }, {
-                        "id": 79,
-                        "name": "Shirley",
-                        "lucky_number": 24
-                    }, {
-                        "id": 80,
-                        "name": "Helen",
-                        "lucky_number": 9
-                    }, {
-                        "id": 81,
-                        "name": "Wanda",
-                        "lucky_number": 98
-                    }, {
-                        "id": 82,
-                        "name": "Ernest",
-                        "lucky_number": 35
-                    }, {
-                        "id": 83,
-                        "name": "Steven",
-                        "lucky_number": 9
-                    }, {
-                        "id": 84,
-                        "name": "Jose",
-                        "lucky_number": 27
-                    }, {
-                        "id": 85,
-                        "name": "Kimberly",
-                        "lucky_number": 52
-                    }, {
-                        "id": 86,
-                        "name": "Nancy",
-                        "lucky_number": 48
-                    }, {
-                        "id": 87,
-                        "name": "Christopher",
-                        "lucky_number": 44
-                    }, {
-                        "id": 88,
-                        "name": "Nancy",
-                        "lucky_number": 40
-                    }, {
-                        "id": 89,
-                        "name": "Philip",
-                        "lucky_number": 34
-                    }, {
-                        "id": 90,
-                        "name": "Bruce",
-                        "lucky_number": 69
-                    }, {
-                        "id": 91,
-                        "name": "Jason",
-                        "lucky_number": 60
-                    }, {
-                        "id": 92,
-                        "name": "Denise",
-                        "lucky_number": 30
-                    }, {
-                        "id": 93,
-                        "name": "Jane",
-                        "lucky_number": 66
-                    }, {
-                        "id": 94,
-                        "name": "Brian",
-                        "lucky_number": 49
-                    }, {
-                        "id": 95,
-                        "name": "Eugene",
-                        "lucky_number": 51
-                    }, {
-                        "id": 96,
-                        "name": "Jack",
-                        "lucky_number": 97
-                    }, {
-                        "id": 97,
-                        "name": "Peter",
-                        "lucky_number": 1
-                    }, {
-                        "id": 98,
-                        "name": "Virginia",
-                        "lucky_number": 20
-                    }, {
-                        "id": 99,
-                        "name": "Walter",
-                        "lucky_number": 63
-                    }, {
-                        "id": 100,
-                        "name": "Virginia",
-                        "lucky_number": 14
+                        'id': 1,
+                        'name': 'Anna',
+                        'lucky_number': 63
+                    }, {
+                        'id': 2,
+                        'name': 'Julie',
+                        'lucky_number': 8
+                    }, {
+                        'id': 3,
+                        'name': 'Lillian',
+                        'lucky_number': 30
+                    }, {
+                        'id': 4,
+                        'name': 'Norma',
+                        'lucky_number': 13
+                    }, {
+                        'id': 5,
+                        'name': 'Ralph',
+                        'lucky_number': 28
+                    }, {
+                        'id': 6,
+                        'name': 'Benjamin',
+                        'lucky_number': 66
+                    }, {
+                        'id': 7,
+                        'name': 'George',
+                        'lucky_number': 66
+                    }, {
+                        'id': 8,
+                        'name': 'Ryan',
+                        'lucky_number': 65
+                    }, {
+                        'id': 9,
+                        'name': 'Martha',
+                        'lucky_number': 57
+                    }, {
+                        'id': 10,
+                        'name': 'Todd',
+                        'lucky_number': 65
+                    }, {
+                        'id': 11,
+                        'name': 'Norma',
+                        'lucky_number': 73
+                    }, {
+                        'id': 12,
+                        'name': 'Frank',
+                        'lucky_number': 27
+                    }, {
+                        'id': 13,
+                        'name': 'Kathryn',
+                        'lucky_number': 93
+                    }, {
+                        'id': 14,
+                        'name': 'Philip',
+                        'lucky_number': 63
+                    }, {
+                        'id': 15,
+                        'name': 'Ronald',
+                        'lucky_number': 89
+                    }, {
+                        'id': 16,
+                        'name': 'Joshua',
+                        'lucky_number': 18
+                    }, {
+                        'id': 17,
+                        'name': 'Phillip',
+                        'lucky_number': 16
+                    }, {
+                        'id': 18,
+                        'name': 'Susan',
+                        'lucky_number': 6
+                    }, {
+                        'id': 19,
+                        'name': 'Louise',
+                        'lucky_number': 52
+                    }, {
+                        'id': 20,
+                        'name': 'Gary',
+                        'lucky_number': 18
+                    }, {
+                        'id': 21,
+                        'name': 'Laura',
+                        'lucky_number': 9
+                    }, {
+                        'id': 22,
+                        'name': 'Tina',
+                        'lucky_number': 70
+                    }, {
+                        'id': 23,
+                        'name': 'Jesse',
+                        'lucky_number': 2
+                    }, {
+                        'id': 24,
+                        'name': 'Jessica',
+                        'lucky_number': 15
+                    }, {
+                        'id': 25,
+                        'name': 'Scott',
+                        'lucky_number': 38
+                    }, {
+                        'id': 26,
+                        'name': 'Michael',
+                        'lucky_number': 23
+                    }, {
+                        'id': 27,
+                        'name': 'Harold',
+                        'lucky_number': 66
+                    }, {
+                        'id': 28,
+                        'name': 'William',
+                        'lucky_number': 57
+                    }, {
+                        'id': 29,
+                        'name': 'Harry',
+                        'lucky_number': 14
+                    }, {
+                        'id': 30,
+                        'name': 'Dennis',
+                        'lucky_number': 9
+                    }, {
+                        'id': 31,
+                        'name': 'Sara',
+                        'lucky_number': 9
+                    }, {
+                        'id': 32,
+                        'name': 'David',
+                        'lucky_number': 31
+                    }, {
+                        'id': 33,
+                        'name': 'Antonio',
+                        'lucky_number': 2
+                    }, {
+                        'id': 34,
+                        'name': 'Anna',
+                        'lucky_number': 85
+                    }, {
+                        'id': 35,
+                        'name': 'Earl',
+                        'lucky_number': 98
+                    }, {
+                        'id': 36,
+                        'name': 'Melissa',
+                        'lucky_number': 70
+                    }, {
+                        'id': 37,
+                        'name': 'Eric',
+                        'lucky_number': 94
+                    }, {
+                        'id': 38,
+                        'name': 'Joe',
+                        'lucky_number': 42
+                    }, {
+                        'id': 39,
+                        'name': 'Andrea',
+                        'lucky_number': 39
+                    }, {
+                        'id': 40,
+                        'name': 'Michael',
+                        'lucky_number': 44
+                    }, {
+                        'id': 41,
+                        'name': 'Lillian',
+                        'lucky_number': 10
+                    }, {
+                        'id': 42,
+                        'name': 'Elizabeth',
+                        'lucky_number': 24
+                    }, {
+                        'id': 43,
+                        'name': 'Ryan',
+                        'lucky_number': 78
+                    }, {
+                        'id': 44,
+                        'name': 'Phillip',
+                        'lucky_number': 86
+                    }, {
+                        'id': 45,
+                        'name': 'Patrick',
+                        'lucky_number': 64
+                    }, {
+                        'id': 46,
+                        'name': 'Barbara',
+                        'lucky_number': 54
+                    }, {
+                        'id': 47,
+                        'name': 'Patricia',
+                        'lucky_number': 9
+                    }, {
+                        'id': 48,
+                        'name': 'Brenda',
+                        'lucky_number': 18
+                    }, {
+                        'id': 49,
+                        'name': 'Sara',
+                        'lucky_number': 12
+                    }, {
+                        'id': 50,
+                        'name': 'Steven',
+                        'lucky_number': 50
+                    }, {
+                        'id': 51,
+                        'name': 'Steven',
+                        'lucky_number': 44
+                    }, {
+                        'id': 52,
+                        'name': 'Paul',
+                        'lucky_number': 88
+                    }, {
+                        'id': 53,
+                        'name': 'Ann',
+                        'lucky_number': 51
+                    }, {
+                        'id': 54,
+                        'name': 'Frank',
+                        'lucky_number': 3
+                    }, {
+                        'id': 55,
+                        'name': 'Beverly',
+                        'lucky_number': 10
+                    }, {
+                        'id': 56,
+                        'name': 'Elizabeth',
+                        'lucky_number': 52
+                    }, {
+                        'id': 57,
+                        'name': 'Patrick',
+                        'lucky_number': 96
+                    }, {
+                        'id': 58,
+                        'name': 'Susan',
+                        'lucky_number': 92
+                    }, {
+                        'id': 59,
+                        'name': 'Lawrence',
+                        'lucky_number': 53
+                    }, {
+                        'id': 60,
+                        'name': 'Denise',
+                        'lucky_number': 65
+                    }, {
+                        'id': 61,
+                        'name': 'Carol',
+                        'lucky_number': 33
+                    }, {
+                        'id': 62,
+                        'name': 'Larry',
+                        'lucky_number': 95
+                    }, {
+                        'id': 63,
+                        'name': 'Martha',
+                        'lucky_number': 32
+                    }, {
+                        'id': 64,
+                        'name': 'Steve',
+                        'lucky_number': 69
+                    }, {
+                        'id': 65,
+                        'name': 'Timothy',
+                        'lucky_number': 16
+                    }, {
+                        'id': 66,
+                        'name': 'Jose',
+                        'lucky_number': 16
+                    }, {
+                        'id': 67,
+                        'name': 'Jennifer',
+                        'lucky_number': 96
+                    }, {
+                        'id': 68,
+                        'name': 'Benjamin',
+                        'lucky_number': 20
+                    }, {
+                        'id': 69,
+                        'name': 'Christine',
+                        'lucky_number': 8
+                    }, {
+                        'id': 70,
+                        'name': 'Timothy',
+                        'lucky_number': 93
+                    }, {
+                        'id': 71,
+                        'name': 'Patricia',
+                        'lucky_number': 17
+                    }, {
+                        'id': 72,
+                        'name': 'Craig',
+                        'lucky_number': 48
+                    }, {
+                        'id': 73,
+                        'name': 'Philip',
+                        'lucky_number': 88
+                    }, {
+                        'id': 74,
+                        'name': 'Lori',
+                        'lucky_number': 56
+                    }, {
+                        'id': 75,
+                        'name': 'Janet',
+                        'lucky_number': 4
+                    }, {
+                        'id': 76,
+                        'name': 'Denise',
+                        'lucky_number': 30
+                    }, {
+                        'id': 77,
+                        'name': 'Elizabeth',
+                        'lucky_number': 44
+                    }, {
+                        'id': 78,
+                        'name': 'Thomas',
+                        'lucky_number': 95
+                    }, {
+                        'id': 79,
+                        'name': 'Shirley',
+                        'lucky_number': 24
+                    }, {
+                        'id': 80,
+                        'name': 'Helen',
+                        'lucky_number': 9
+                    }, {
+                        'id': 81,
+                        'name': 'Wanda',
+                        'lucky_number': 98
+                    }, {
+                        'id': 82,
+                        'name': 'Ernest',
+                        'lucky_number': 35
+                    }, {
+                        'id': 83,
+                        'name': 'Steven',
+                        'lucky_number': 9
+                    }, {
+                        'id': 84,
+                        'name': 'Jose',
+                        'lucky_number': 27
+                    }, {
+                        'id': 85,
+                        'name': 'Kimberly',
+                        'lucky_number': 52
+                    }, {
+                        'id': 86,
+                        'name': 'Nancy',
+                        'lucky_number': 48
+                    }, {
+                        'id': 87,
+                        'name': 'Christopher',
+                        'lucky_number': 44
+                    }, {
+                        'id': 88,
+                        'name': 'Nancy',
+                        'lucky_number': 40
+                    }, {
+                        'id': 89,
+                        'name': 'Philip',
+                        'lucky_number': 34
+                    }, {
+                        'id': 90,
+                        'name': 'Bruce',
+                        'lucky_number': 69
+                    }, {
+                        'id': 91,
+                        'name': 'Jason',
+                        'lucky_number': 60
+                    }, {
+                        'id': 92,
+                        'name': 'Denise',
+                        'lucky_number': 30
+                    }, {
+                        'id': 93,
+                        'name': 'Jane',
+                        'lucky_number': 66
+                    }, {
+                        'id': 94,
+                        'name': 'Brian',
+                        'lucky_number': 49
+                    }, {
+                        'id': 95,
+                        'name': 'Eugene',
+                        'lucky_number': 51
+                    }, {
+                        'id': 96,
+                        'name': 'Jack',
+                        'lucky_number': 97
+                    }, {
+                        'id': 97,
+                        'name': 'Peter',
+                        'lucky_number': 1
+                    }, {
+                        'id': 98,
+                        'name': 'Virginia',
+                        'lucky_number': 20
+                    }, {
+                        'id': 99,
+                        'name': 'Walter',
+                        'lucky_number': 63
+                    }, {
+                        'id': 100,
+                        'name': 'Virginia',
+                        'lucky_number': 14
                     }]
             };
         });
@@ -3102,7 +3561,7 @@ var LocalizationComponent = (function () {
 LocalizationComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-localization',
-        template: __webpack_require__(445)
+        template: __webpack_require__(448)
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__ngx_translate_core__["c" /* TranslateService */]) === "function" && _a || Object])
 ], LocalizationComponent);
@@ -3112,7 +3571,7 @@ var _a;
 
 /***/ }),
 
-/***/ 330:
+/***/ 332:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3155,13 +3614,13 @@ var RestComponent = (function () {
             var birthday = this.configObject.data[Math.floor(Math.random() * this.configObject.data.length - 1) + 1].birthday;
             // push data to data array (could be swapped to a method for persisting the data to a database).
             this.configObject.data.push({
-                "id": this.configObject.data.length + 1,
-                "first_name": firstName,
-                "last_name": lastName,
-                "email": firstName + '.' + lastName + '@some_email_address.xyz',
-                "gender": gender,
-                "favorite_color": favoriteColor,
-                "birthday": birthday
+                'id': this.configObject.data.length + 1,
+                'first_name': firstName,
+                'last_name': lastName,
+                'email': firstName + '.' + lastName + '@some_email_address.xyz',
+                'gender': gender,
+                'favorite_color': favoriteColor,
+                'birthday': birthday
             });
         };
         /** Apply predefined filter using first_name.
@@ -3170,11 +3629,6 @@ var RestComponent = (function () {
             this.myTable.gtApplyFilter({
                 first_name: ['Victor', 'Joe', 'Carol']
             });
-        };
-        /** Apply search
-         * */
-        this.applySearch = function (value) {
-            this.myTable.gtSearch(value);
         };
         /** Listen for events
          * */
@@ -3269,7 +3723,7 @@ __decorate([
 RestComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-rest',
-        template: __webpack_require__(447)
+        template: __webpack_require__(450)
     }),
     __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"]) === "function" && _b || Object])
 ], RestComponent);
@@ -3279,7 +3733,7 @@ var _a, _b;
 
 /***/ }),
 
-/***/ 384:
+/***/ 386:
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -3288,21 +3742,21 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 384;
+webpackEmptyContext.id = 386;
 
 
 /***/ }),
 
-/***/ 385:
+/***/ 387:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__polyfills_ts__ = __webpack_require__(146);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__(392);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__(393);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__(417);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_app_module__ = __webpack_require__(414);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__(419);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_app_module__ = __webpack_require__(416);
 
 
 
@@ -3316,15 +3770,15 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dyna
 
 /***/ }),
 
-/***/ 394:
+/***/ 395:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_gt_column_settings_component__ = __webpack_require__(395);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_gt_column_settings_component__ = __webpack_require__(396);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_generic_table_core__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_ng2_dragula__ = __webpack_require__(337);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_ng2_dragula__ = __webpack_require__(339);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_ng2_dragula___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_ng2_dragula__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ColumnSettingsModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -3365,18 +3819,18 @@ ColumnSettingsModule = __decorate([
 
 /***/ }),
 
-/***/ 395:
+/***/ 396:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_generic_table_core__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_dragula__ = __webpack_require__(337);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_dragula__ = __webpack_require__(339);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_dragula___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_dragula__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__interfaces_gt_column_settings_texts__ = __webpack_require__(396);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__interfaces_gt_column_settings_texts__ = __webpack_require__(397);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__interfaces_gt_column_settings_texts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__interfaces_gt_column_settings_texts__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GtColumnSettingsComponent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return GtColumnPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GtColumnSettingsComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3390,6 +3844,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+var GtColumnPipe = (function () {
+    function GtColumnPipe() {
+    }
+    // TODO: move to helper functions
+    /** Sort by column order */
+    GtColumnPipe.prototype.getColumnOrder = function (a, b) {
+        if (a.columnOrder < b.columnOrder)
+            return -1;
+        if (a.columnOrder > b.columnOrder || typeof a.columnOrder === 'undefined')
+            return 1;
+        return 0;
+    };
+    ;
+    /** return enabled columns */
+    GtColumnPipe.prototype.getEnabled = function (column) {
+        return column.enabled !== false ? column : null;
+    };
+    GtColumnPipe.prototype.transform = function (settings) {
+        return settings.filter(this.getEnabled).sort(this.getColumnOrder);
+    };
+    return GtColumnPipe;
+}());
+GtColumnPipe = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Pipe"])({
+        name: 'gtColumn'
+    })
+], GtColumnPipe);
+
 var GtColumnSettingsComponent = (function () {
     function GtColumnSettingsComponent(dragulaService, changeDetectorRef) {
         var _this = this;
@@ -3399,8 +3881,8 @@ var GtColumnSettingsComponent = (function () {
         this.gtWrapperClasses = 'px-3 pb-3 table-bordered border-left-0 border-right-0 border-top-0 alert-info';
         this.overlay = true;
         this.gtDefaultTexts = {
-            title: "Columns",
-            help: "Double click to toggle visibility, drag and drop to reorder."
+            title: 'Columns',
+            help: 'Double click to toggle visibility, drag and drop to reorder.'
         };
         this.gtTexts = this.gtDefaultTexts;
         this.active = false;
@@ -3430,6 +3912,13 @@ var GtColumnSettingsComponent = (function () {
         enumerable: true,
         configurable: true
     });
+    /**
+   * Check offset height on window resize.
+   */
+    GtColumnSettingsComponent.prototype.onResize = function () {
+        this.offset = this._getTableHeadHeight();
+        this.heightAdjust = this._getColumnSettingsHeaderHeight();
+    };
     GtColumnSettingsComponent.prototype.ngOnInit = function () {
         this.bagId = this.generateId();
         // setup texts
@@ -3484,13 +3973,6 @@ var GtColumnSettingsComponent = (function () {
         this._genericTable.redraw();
     };
     /**
-     * Check offset height on window resize.
-     */
-    GtColumnSettingsComponent.prototype.onResize = function () {
-        this.offset = this._getTableHeadHeight();
-        this.heightAdjust = this._getColumnSettingsHeaderHeight();
-    };
-    /**
      * Get height of table head element ie. first row containing table headers.
      * @returns {string} offset height for table header in px.
      */
@@ -3532,6 +4014,12 @@ var GtColumnSettingsComponent = (function () {
     return GtColumnSettingsComponent;
 }());
 __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["HostListener"])('window:resize', []),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], GtColumnSettingsComponent.prototype, "onResize", null);
+__decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_generic_table_core__["b" /* GenericTableComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_generic_table_core__["b" /* GenericTableComponent */]) === "function" && _a || Object),
     __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_generic_table_core__["b" /* GenericTableComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_generic_table_core__["b" /* GenericTableComponent */]) === "function" && _b || Object])
@@ -3546,15 +4034,15 @@ __decorate([
 ], GtColumnSettingsComponent.prototype, "gtColumnSettingsHeader", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], GtColumnSettingsComponent.prototype, "gtHeaderClasses", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], GtColumnSettingsComponent.prototype, "gtWrapperClasses", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", Boolean)
+    __metadata("design:type", Object)
 ], GtColumnSettingsComponent.prototype, "overlay", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
@@ -3567,72 +4055,158 @@ __decorate([
 GtColumnSettingsComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'gt-column-settings',
-        template: "\n    <ng-template #columnItem let-column let-index=\"index\">\n      <span class=\"badge badge-default\">{{index}}</span>\n      <span (dblclick)=\"toggleColumnVisibility(column)\" class=\"badge\" [ngClass]=\"{'badge-success':column.visible !== false, 'badge-danger':column.visible === false}\">{{genericTable.gtFields | gtProperty:column.objectKey:'name'}}</span>\n    </ng-template>\n    <div class=\"gt-column-settings\" (window:resize)=\"onResize($event)\">\n      <div class=\"gt-column-settings-panel\"  *ngIf=\"active\" [style.padding-top]=\"offset\" [style.height]=\"'calc(100% - '+offset+')'\">\n        <div #gtColumnSettingsHeader class=\"gt-column-settings-header border-bottom-0\" [ngClass]=\"gtHeaderClasses\">\n          <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"toggleColumnSettings()\">\n            <span aria-hidden=\"true\">&times;</span>\n          </button>\n          <h6 class=\"gt-column-settings-title\" *ngIf=\"gtTexts.title\">{{gtTexts.title}}</h6>\n          <small class=\"gt-column-settings-help form-text text-muted\" *ngIf=\"gtTexts.help\">{{gtTexts.help}}</small>\n        </div>\n        <div class=\"gt-column-settings-item-wrapper\" [ngClass]=\"gtWrapperClasses\" [dragula]='bagId'  data-visible=\"true\" [style.max-height]=\"'calc(100% - '+heightAdjust+')'\">\n          <div class=\"gt-column-settings-item pr-0 pr-sm-4\" *ngFor=\"let i = index;let column of genericTable.gtSettings | gtColumn:true\" [attr.data-object-key]=\"column.objectKey\">\n            <ng-template [ngTemplateOutlet]=\"gtColumnItem ? gtColumnItem:columnItem\" [ngOutletContext]=\"{$implicit: column,index: this.reordered ? column.columnOrder+1:i+1, name: (genericTable.gtFields | gtProperty:column.objectKey:'name')}\"></ng-template>\n          </div>\n        </div>\n        <div class=\"gt-overlay\" *ngIf=\"active && overlay\" (click)=\"toggleColumnSettings()\" [style.height]=\"'calc(100% - -'+offset+')'\"></div>\n      </div>\n      <ng-template #genericTableElement [ngIf]=\"genericTable\">\n        <ng-content></ng-content>\n      </ng-template>\n    </div>\n  "
+        template: "\n    <ng-template #columnItem let-column let-index=\"index\">\n      <span class=\"badge badge-default\">{{index}}</span>\n      <span (dblclick)=\"toggleColumnVisibility(column)\" class=\"badge\" [ngClass]=\"{'badge-success':column.visible !== false, 'badge-danger':column.visible === false}\">{{genericTable.gtFields | gtProperty:column.objectKey:'name'}}</span>\n    </ng-template>\n    <div class=\"gt-column-settings\">\n      <div class=\"gt-column-settings-panel\"  *ngIf=\"active\" [style.padding-top]=\"offset\" [style.height]=\"'calc(100% - '+offset+')'\">\n        <div #gtColumnSettingsHeader class=\"gt-column-settings-header border-bottom-0\" [ngClass]=\"gtHeaderClasses\">\n          <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"toggleColumnSettings()\">\n            <span aria-hidden=\"true\">&times;</span>\n          </button>\n          <h6 class=\"gt-column-settings-title\" *ngIf=\"gtTexts.title\">{{gtTexts.title}}</h6>\n          <small class=\"gt-column-settings-help form-text text-muted\" *ngIf=\"gtTexts.help\">{{gtTexts.help}}</small>\n        </div>\n        <div class=\"gt-column-settings-item-wrapper\" [ngClass]=\"gtWrapperClasses\" [dragula]='bagId'  data-visible=\"true\" [style.max-height]=\"'calc(100% - '+heightAdjust+')'\">\n          <div class=\"gt-column-settings-item pr-0 pr-sm-4\" *ngFor=\"let i = index;let column of genericTable.gtSettings | gtColumn\" [attr.data-object-key]=\"column.objectKey\">\n            <ng-template [ngTemplateOutlet]=\"gtColumnItem ? gtColumnItem:columnItem\" [ngOutletContext]=\"{$implicit: column,index: this.reordered ? column.columnOrder+1:i+1, name: (genericTable.gtFields | gtProperty:column.objectKey:'name')}\"></ng-template>\n          </div>\n        </div>\n        <div class=\"gt-overlay\" *ngIf=\"active && overlay\" (click)=\"toggleColumnSettings()\" [style.height]=\"'calc(100% - -'+offset+')'\"></div>\n      </div>\n      <ng-template #genericTableElement [ngIf]=\"genericTable\">\n        <ng-content></ng-content>\n      </ng-template>\n    </div>\n  "
     }),
     __metadata("design:paramtypes", [typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_2_ng2_dragula__["DragulaService"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ng2_dragula__["DragulaService"]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"]) === "function" && _h || Object])
 ], GtColumnSettingsComponent);
-
-var GtColumnPipe = (function () {
-    function GtColumnPipe() {
-    }
-    // TODO: move to helper functions
-    /** Sort by column order */
-    GtColumnPipe.prototype.getColumnOrder = function (a, b) {
-        if (a.columnOrder < b.columnOrder)
-            return -1;
-        if (a.columnOrder > b.columnOrder || typeof a.columnOrder === 'undefined')
-            return 1;
-        return 0;
-    };
-    ;
-    /** return enabled columns */
-    GtColumnPipe.prototype.getEnabled = function (column) {
-        return column.enabled !== false ? column : null;
-    };
-    GtColumnPipe.prototype.transform = function (settings, visible) {
-        return settings.filter(this.getEnabled).sort(this.getColumnOrder);
-    };
-    return GtColumnPipe;
-}());
-GtColumnPipe = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Pipe"])({
-        name: 'gtColumn'
-    })
-], GtColumnPipe);
 
 var _a, _b, _c, _d, _e, _f, _g, _h;
 //# sourceMappingURL=gt-column-settings.component.js.map
 
 /***/ }),
 
-/***/ 396:
+/***/ 397:
 /***/ (function(module, exports) {
 
 //# sourceMappingURL=gt-column-settings-texts.js.map
 
 /***/ }),
 
-/***/ 397:
+/***/ 398:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Subject__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Subject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Subject__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GtDropdownComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var GtDropdownComponent = (function () {
+    function GtDropdownComponent(renderer) {
+        this.renderer = renderer;
+        this.selectedChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
+        this.active = false; // is dropdown active or not
+        this.state = new __WEBPACK_IMPORTED_MODULE_1_rxjs_Subject__["Subject"](); // current state of dropdown
+    }
+    Object.defineProperty(GtDropdownComponent.prototype, "selected", {
+        get: function () {
+            return this._selected;
+        },
+        set: function (selection) {
+            this._selected = selection;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    GtDropdownComponent.prototype.select = function (option) {
+        this.active = false;
+        this.state.next(this.active);
+        if (this._selected !== option) {
+            this.selectedChange.emit(option);
+        }
+    };
+    GtDropdownComponent.prototype.toggleDropdown = function () {
+        var _this = this;
+        this.active = !this.active;
+        setTimeout(function () { _this.state.next(_this.active); }, 0);
+    };
+    GtDropdownComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.state.subscribe(function (state) {
+            if (state) {
+                // set up click listener and listen for click outside dropdown
+                _this.clickListener = _this.renderer.listen('document', 'click', function (event) {
+                    _this.active = false;
+                    _this.state.next(_this.active);
+                });
+                // set up keyboard listener and listen for escape key up
+                _this.keyupListener = _this.renderer.listen('document', 'keyup', function (event) {
+                    switch (event.key) {
+                        case 'Escape':
+                            _this.active = false;
+                            _this.state.next(_this.active);
+                            break;
+                    }
+                });
+            }
+            else {
+                _this.removeListeners();
+            }
+        });
+    };
+    GtDropdownComponent.prototype.ngOnDestroy = function () {
+        this.removeListeners();
+    };
+    GtDropdownComponent.prototype.removeListeners = function () {
+        if (this.clickListener) {
+            this.clickListener();
+        }
+        if (this.keyupListener) {
+            this.keyupListener();
+        }
+    };
+    return GtDropdownComponent;
+}());
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [Object])
+], GtDropdownComponent.prototype, "selected", null);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", Object)
+], GtDropdownComponent.prototype, "options", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]) === "function" && _a || Object)
+], GtDropdownComponent.prototype, "selectedChange", void 0);
+GtDropdownComponent = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'gt-dropdown',
+        template: "\n    <div class=\"dropdown gt-dropdown\" [ngClass]=\"{'show':active}\">\n      <div class=\"dropdown-toggle\" (click)=\"toggleDropdown()\" [attr.aria-expanded]=\"active\">{{selected}}</div>\n      <div class=\"dropdown-menu\" *ngIf=\"active\">\n        <button *ngFor=\"let option of options;\" class=\"dropdown-item\" (click)=\"select(option)\" [ngClass]=\"{'active':option === selected}\">{{option}}</button>\n      </div>\n    </div>\n  ",
+        styles: ["\n    .gt-dropdown .dropdown-toggle {\n      cursor: pointer;\n    }\n    .gt-dropdown .dropdown-toggle::after {\n      transition: opacity 0.4s ease-in-out;\n      opacity: 0;\n    }\n    .gt-dropdown .dropdown-toggle:hover::after {\n      opacity: 1;\n    }\n    .gt-dropdown .dropdown-menu {\n      max-height: 320px;\n      overflow: auto;\n    }"]
+    }),
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer2"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer2"]) === "function" && _b || Object])
+], GtDropdownComponent);
+
+var _a, _b;
+//# sourceMappingURL=gt-dropdown.component.js.map
+
+/***/ }),
+
+/***/ 399:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_generic_table_component__ = __webpack_require__(132);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pipes_gt_render_pipe__ = __webpack_require__(409);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pipes_gt_visible_pipe__ = __webpack_require__(411);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pipes_dash_case_pipe__ = __webpack_require__(403);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pipes_gt_property_pipe__ = __webpack_require__(408);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pipes_gt_chunk_pipe__ = __webpack_require__(404);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pipes_gt_filter_pipe__ = __webpack_require__(405);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pipes_gt_order_by_pipe__ = __webpack_require__(407);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pipes_gt_render_pipe__ = __webpack_require__(411);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pipes_gt_visible_pipe__ = __webpack_require__(413);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pipes_dash_case_pipe__ = __webpack_require__(405);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pipes_gt_property_pipe__ = __webpack_require__(410);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pipes_gt_chunk_pipe__ = __webpack_require__(406);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pipes_gt_filter_pipe__ = __webpack_require__(407);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pipes_gt_order_by_pipe__ = __webpack_require__(409);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__angular_core__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_common__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_gt_expanding_row_component__ = __webpack_require__(318);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pipes_gt_search_pipe__ = __webpack_require__(410);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__directives_component_anchor_directive__ = __webpack_require__(398);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__components_gt_pagination_component__ = __webpack_require__(319);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__components_gt_table_info_component__ = __webpack_require__(320);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_gt_expanding_row_component__ = __webpack_require__(319);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pipes_gt_search_pipe__ = __webpack_require__(412);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__directives_component_anchor_directive__ = __webpack_require__(400);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__components_gt_pagination_component__ = __webpack_require__(320);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__components_gt_table_info_component__ = __webpack_require__(321);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_gt_custom_component_factory__ = __webpack_require__(147);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pipes_gt_meta_pipe__ = __webpack_require__(406);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pipes_gt_meta_pipe__ = __webpack_require__(408);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__angular_forms__ = __webpack_require__(318);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__components_gt_dropdown_component__ = __webpack_require__(398);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GenericTableModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3640,6 +4214,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
 
 
 
@@ -3681,19 +4257,22 @@ GenericTableModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_13__components_gt_pagination_component__["b" /* PaginationPipe */],
             __WEBPACK_IMPORTED_MODULE_14__components_gt_table_info_component__["a" /* GtTableInfoComponent */],
             __WEBPACK_IMPORTED_MODULE_14__components_gt_table_info_component__["b" /* TableInfoPipe */],
-            __WEBPACK_IMPORTED_MODULE_16__pipes_gt_meta_pipe__["a" /* GtMetaPipe */]
+            __WEBPACK_IMPORTED_MODULE_16__pipes_gt_meta_pipe__["a" /* GtMetaPipe */],
+            __WEBPACK_IMPORTED_MODULE_18__components_gt_dropdown_component__["a" /* GtDropdownComponent */]
         ],
-        imports: [__WEBPACK_IMPORTED_MODULE_9__angular_common__["CommonModule"]],
+        imports: [__WEBPACK_IMPORTED_MODULE_9__angular_common__["CommonModule"], __WEBPACK_IMPORTED_MODULE_17__angular_forms__["a" /* FormsModule */]],
         exports: [
             __WEBPACK_IMPORTED_MODULE_0__components_generic_table_component__["a" /* GenericTableComponent */],
             __WEBPACK_IMPORTED_MODULE_13__components_gt_pagination_component__["a" /* GtPaginationComponent */],
             __WEBPACK_IMPORTED_MODULE_14__components_gt_table_info_component__["a" /* GtTableInfoComponent */],
             __WEBPACK_IMPORTED_MODULE_4__pipes_gt_property_pipe__["a" /* GtPropertyPipe */],
-            __WEBPACK_IMPORTED_MODULE_10__components_gt_expanding_row_component__["a" /* GtExpandingRowComponent */]
+            __WEBPACK_IMPORTED_MODULE_10__components_gt_expanding_row_component__["a" /* GtExpandingRowComponent */],
+            __WEBPACK_IMPORTED_MODULE_18__components_gt_dropdown_component__["a" /* GtDropdownComponent */]
         ],
         entryComponents: [],
         providers: [],
-        bootstrap: []
+        bootstrap: [] //,
+        //schemas:[CUSTOM_ELEMENTS_SCHEMA]
     })
 ], GenericTableModule);
 
@@ -3701,7 +4280,7 @@ GenericTableModule = __decorate([
 
 /***/ }),
 
-/***/ 398:
+/***/ 400:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3756,35 +4335,35 @@ var _a, _b, _c, _d, _e;
 
 /***/ }),
 
-/***/ 399:
+/***/ 401:
 /***/ (function(module, exports) {
 
 //# sourceMappingURL=gt-config-field.js.map
 
 /***/ }),
 
-/***/ 400:
+/***/ 402:
 /***/ (function(module, exports) {
 
 //# sourceMappingURL=gt-config-setting.js.map
 
 /***/ }),
 
-/***/ 401:
+/***/ 403:
 /***/ (function(module, exports) {
 
 //# sourceMappingURL=gt-config.js.map
 
 /***/ }),
 
-/***/ 402:
+/***/ 404:
 /***/ (function(module, exports) {
 
 //# sourceMappingURL=gt-row.js.map
 
 /***/ }),
 
-/***/ 403:
+/***/ 405:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3815,7 +4394,7 @@ DashCasePipe = __decorate([
 
 /***/ }),
 
-/***/ 404:
+/***/ 406:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3857,7 +4436,7 @@ GtChunkPipe = __decorate([
 
 /***/ }),
 
-/***/ 405:
+/***/ 407:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3915,7 +4494,7 @@ GtFilterPipe = __decorate([
 
 /***/ }),
 
-/***/ 406:
+/***/ 408:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3951,7 +4530,7 @@ GtMetaPipe = __decorate([
 
 /***/ }),
 
-/***/ 407:
+/***/ 409:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4080,7 +4659,7 @@ var GtOrderByPipe_1;
 
 /***/ }),
 
-/***/ 408:
+/***/ 410:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4097,8 +4676,8 @@ var GtPropertyPipe = (function () {
     function GtPropertyPipe() {
     }
     GtPropertyPipe.prototype.transform = function (config, objectKey, property, refresh) {
+        var output = null;
         try {
-            var output = null;
             for (var i = 0; i < config.length; i++) {
                 if (config[i].objectKey === objectKey) {
                     output = config[i][property];
@@ -4122,7 +4701,7 @@ GtPropertyPipe = __decorate([
 
 /***/ }),
 
-/***/ 409:
+/***/ 411:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4216,7 +4795,7 @@ var GtRenderPipe = (function () {
         for (var i = 0; i < fields.length; i++) {
             //console.log(!row[fields[i].objectKey]);
             if (fields[i].value && typeof fields[i].value === 'function' && !row[fields[i].objectKey]) {
-                row[fields[i].objectKey] = loading ? "" : fields[i].value(row);
+                row[fields[i].objectKey] = loading ? '' : fields[i].value(row);
             }
         }
         //console.log(row);
@@ -4237,13 +4816,13 @@ var GtRenderPipe = (function () {
                     columnComponent: fieldSetting.columnComponent
                 };
                 if (loading) {
-                    columnObject.renderValue = row[key] !== null ? row[key] : "";
+                    columnObject.renderValue = row[key] !== null ? row[key] : '';
                 }
                 else if (highlight && searchString && this.getProperty(settings, key).search !== false) {
-                    columnObject.renderValue = fieldSetting.render && typeof fieldSetting.render === 'function' ? this.highlight(fieldSetting.render(row), searchString) : this.highlight(row[key] !== null ? row[key] : "", searchString);
+                    columnObject.renderValue = fieldSetting.render && typeof fieldSetting.render === 'function' ? this.highlight(fieldSetting.render(row), searchString) : this.highlight(row[key] !== null ? row[key] : '', searchString);
                 }
                 else {
-                    columnObject.renderValue = fieldSetting.render && typeof fieldSetting.render === 'function' ? this.sanitizer.bypassSecurityTrustHtml(fieldSetting.render(row)) : row[key] !== null ? row[key] : "";
+                    columnObject.renderValue = fieldSetting.render && typeof fieldSetting.render === 'function' ? this.sanitizer.bypassSecurityTrustHtml(fieldSetting.render(row)) : row[key] !== null ? row[key] : '';
                 }
                 if (fieldSetting.click && typeof fieldSetting.click === 'function') {
                     columnObject.click = fieldSetting.click;
@@ -4273,7 +4852,7 @@ var _a;
 
 /***/ }),
 
-/***/ 410:
+/***/ 412:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4299,7 +4878,7 @@ var GtSearchPipe = (function () {
     }
     GtSearchPipe.prototype.transform = function (allRows, searchTerms, gtInfo, settings, fields, refreshData) {
         //  if no search terms are defined...
-        if (!searchTerms || searchTerms.replace(/"/g, "").length === 0) {
+        if (!searchTerms || searchTerms.replace(/"/g, '').length === 0) {
             // ...return all rows
             var length = allRows === null ? 0 : allRows.length;
             gtInfo.recordsAfterSearch = length;
@@ -4365,7 +4944,7 @@ GtSearchPipe = __decorate([
 
 /***/ }),
 
-/***/ 411:
+/***/ 413:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4414,19 +4993,20 @@ GtVisiblePipe = __decorate([
 
 /***/ }),
 
-/***/ 412:
+/***/ 414:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(393);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lazy_lazy_component__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__rest_rest_component__ = __webpack_require__(330);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__basic_basic_component__ = __webpack_require__(324);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__custom_column_custom_column_component__ = __webpack_require__(326);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__localization_localization_component__ = __webpack_require__(329);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__change_column_settings_change_column_settings_component__ = __webpack_require__(325);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__home_home_component__ = __webpack_require__(327);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(394);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lazy_lazy_component__ = __webpack_require__(330);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__rest_rest_component__ = __webpack_require__(332);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__basic_basic_component__ = __webpack_require__(325);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__custom_column_custom_column_component__ = __webpack_require__(327);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__localization_localization_component__ = __webpack_require__(331);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__change_column_settings_change_column_settings_component__ = __webpack_require__(326);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__home_home_component__ = __webpack_require__(328);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__inline_editing_inline_editing_component__ = __webpack_require__(329);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4434,6 +5014,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -4451,6 +5032,7 @@ var routes = [
     { path: 'basic', component: __WEBPACK_IMPORTED_MODULE_4__basic_basic_component__["a" /* BasicComponent */] },
     { path: 'custom-column', component: __WEBPACK_IMPORTED_MODULE_5__custom_column_custom_column_component__["a" /* CustomColumnComponent */] },
     { path: 'localization', component: __WEBPACK_IMPORTED_MODULE_6__localization_localization_component__["a" /* LocalizationComponent */] },
+    { path: 'inline-editing', component: __WEBPACK_IMPORTED_MODULE_9__inline_editing_inline_editing_component__["a" /* InlineEditingComponent */] },
     { path: 'column-settings-component', component: __WEBPACK_IMPORTED_MODULE_7__change_column_settings_change_column_settings_component__["a" /* ChangeColumnSettingsComponent */] },
     { path: '**', component: __WEBPACK_IMPORTED_MODULE_8__home_home_component__["a" /* HomeComponent */] }
 ];
@@ -4470,7 +5052,7 @@ AppRoutingModule = __decorate([
 
 /***/ }),
 
-/***/ 413:
+/***/ 415:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4492,7 +5074,7 @@ var AppComponent = (function () {
 AppComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-root',
-        template: __webpack_require__(437)
+        template: __webpack_require__(439)
     })
 ], AppComponent);
 
@@ -4500,32 +5082,33 @@ AppComponent = __decorate([
 
 /***/ }),
 
-/***/ 414:
+/***/ 416:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(82);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(391);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(318);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(131);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__(413);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__lazy_lazy_component__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__rest_rest_component__ = __webpack_require__(330);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__(415);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__lazy_lazy_component__ = __webpack_require__(330);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__rest_rest_component__ = __webpack_require__(332);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__custom_row_custom_row_component__ = __webpack_require__(148);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__basic_basic_component__ = __webpack_require__(324);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__examples_examples_component__ = __webpack_require__(415);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__app_routing_module__ = __webpack_require__(412);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular_exemplify__ = __webpack_require__(421);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__basic_basic_component__ = __webpack_require__(325);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__examples_examples_component__ = __webpack_require__(417);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__app_routing_module__ = __webpack_require__(414);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular_exemplify__ = __webpack_require__(423);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular_exemplify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_angular_exemplify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__localization_localization_component__ = __webpack_require__(329);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__custom_column_custom_column_component__ = __webpack_require__(326);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__ngx_translate_core__ = __webpack_require__(331);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__ngx_translate_http_loader__ = __webpack_require__(418);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__localization_localization_component__ = __webpack_require__(331);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__custom_column_custom_column_component__ = __webpack_require__(327);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__ngx_translate_core__ = __webpack_require__(333);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__ngx_translate_http_loader__ = __webpack_require__(420);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__angular_generic_table_core__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__angular_generic_table_column_settings_column_settings_module__ = __webpack_require__(394);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__change_column_settings_change_column_settings_component__ = __webpack_require__(325);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__home_home_component__ = __webpack_require__(327);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__menu_menu_component__ = __webpack_require__(416);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__angular_generic_table_column_settings_column_settings_module__ = __webpack_require__(395);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__change_column_settings_change_column_settings_component__ = __webpack_require__(326);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__home_home_component__ = __webpack_require__(328);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__menu_menu_component__ = __webpack_require__(418);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__inline_editing_inline_editing_component__ = __webpack_require__(329);
 /* unused harmony export createTranslateLoader */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -4561,6 +5144,7 @@ function createTranslateLoader(http) {
 
 
 
+
 var AppModule = (function () {
     function AppModule() {
     }
@@ -4581,7 +5165,8 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_12__localization_localization_component__["a" /* LocalizationComponent */],
             __WEBPACK_IMPORTED_MODULE_18__change_column_settings_change_column_settings_component__["a" /* ChangeColumnSettingsComponent */],
             __WEBPACK_IMPORTED_MODULE_19__home_home_component__["a" /* HomeComponent */],
-            __WEBPACK_IMPORTED_MODULE_20__menu_menu_component__["a" /* MenuComponent */]
+            __WEBPACK_IMPORTED_MODULE_20__menu_menu_component__["a" /* MenuComponent */],
+            __WEBPACK_IMPORTED_MODULE_21__inline_editing_inline_editing_component__["a" /* InlineEditingComponent */]
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -4614,7 +5199,7 @@ AppModule = __decorate([
 
 /***/ }),
 
-/***/ 415:
+/***/ 417:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4640,7 +5225,7 @@ var ExamplesComponent = (function () {
 ExamplesComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-examples',
-        template: __webpack_require__(442),
+        template: __webpack_require__(444),
     }),
     __metadata("design:paramtypes", [])
 ], ExamplesComponent);
@@ -4649,7 +5234,7 @@ ExamplesComponent = __decorate([
 
 /***/ }),
 
-/***/ 416:
+/***/ 418:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4675,8 +5260,8 @@ var MenuComponent = (function () {
 MenuComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'menu',
-        template: __webpack_require__(446),
-        styles: [__webpack_require__(434)]
+        template: __webpack_require__(449),
+        styles: [__webpack_require__(436)]
     }),
     __metadata("design:paramtypes", [])
 ], MenuComponent);
@@ -4685,7 +5270,7 @@ MenuComponent = __decorate([
 
 /***/ }),
 
-/***/ 417:
+/***/ 419:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4702,7 +5287,7 @@ var environment = {
 
 /***/ }),
 
-/***/ 433:
+/***/ 435:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(84)();
@@ -4720,7 +5305,7 @@ module.exports = module.exports.toString();
 
 /***/ }),
 
-/***/ 434:
+/***/ 436:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(84)();
@@ -4735,90 +5320,97 @@ exports.push([module.i, "", ""]);
 
 /*** EXPORTS FROM exports-loader ***/
 module.exports = module.exports.toString();
-
-/***/ }),
-
-/***/ 437:
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"hidden-md-up fixed-top container-fluid mobile-menu px-3 py-2\">\r\n    <div class=\"menu-icon float-right\" [ngClass]=\"{'active':showMenu}\" (click)=\"showMenu = !showMenu\"><div></div></div>\r\n    <menu *ngIf=\"showMenu\" class=\"mt-4 p-0 text-white\"></menu>\r\n</div>\r\n<div class=\"jumbotron mt-4 mt-md-0 bg-teal text-white rounded-0\">\r\n    <div class=\"row no-gutters\">\r\n        <div class=\"col main\">\r\n            <div class=\"container\">\r\n                <h1 class=\"display-4\">Angular Generic Table</h1>\r\n                <p class=\"lead\">A table component for Angular 2+. For more info checkout the docs in the wiki.</p>\r\n                <a class=\"btn btn-primary\" href=\"https://github.com/hjalmers/angular-generic-table/wiki\" target=\"_blank\">Go to wiki</a>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"row no-gutters\">\r\n    <div class=\"col main\">\r\n        <div class=\"container\">\r\n            <router-outlet></router-outlet>\r\n        </div>\r\n    </div>\r\n    <div class=\"col col-auto side hidden-sm-down\">\r\n        <menu class=\"p-0\"></menu>\r\n    </div>\r\n</div>\r\n\r\n\r\n"
-
-/***/ }),
-
-/***/ 438:
-/***/ (function(module, exports) {
-
-module.exports = "<h2>Basic</h2>\r\n<p>Table with static data and simple pagination.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"basicExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','[(gtData)]','[gtRowComponent]','[gtOptions]','[genericTable]','#myTable']\" [source]=\"'child'\" [target]=\"basicExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'basic.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/basic/basic.component.ts'\r\n  }]\">\r\n    <generic-table [gtClasses]=\"'table-sm'\" #myTable [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [gtData]=\"configObject.data\"></generic-table>\r\n    <div class=\"text-center\">\r\n      <small><gt-table-info class=\"form-text text-muted mb-2\" [genericTable]=\"myTable\"></gt-table-info></small>\r\n      <gt-pagination [gtClasses]=\"'pagination-sm justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n    </div>\r\n  </div>\r\n  <div class=\"card-footer\" #basicExample></div>\r\n</div>\r\n"
 
 /***/ }),
 
 /***/ 439:
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Column settings component</h2>\r\n<p class=\"lead\">Toggle column visibility and column order using the <code>ColumnSettingsComponent</code>.</p>\r\n<h5>Installation</h5>\r\n<p>Install with npm by running:</p>\r\n<code>npm install @angular-generic-table/column-settings dragula ng2-dragula --save</code>\r\n<p class=\"mt-4\">More info available in the <a href=\"https://github.com/hjalmers/angular-generic-table/wiki/Installation-and-basic-usage\" target=\"_blank\">wiki</a>.</p>\r\n\r\n<h5>Usage</h5>\r\n<p>This how the <code>ColumnSettingsComponent</code> looks and behaves by default but feel free to customize it using css or by passing predefined classes. You can also define your own template for the columns.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"columnSettingsExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','gtData','[gtRowComponent]','[gtOptions]','[genericTable]','#rowLength','#myTable','#columnSettings']\" [source]=\"'child'\" [target]=\"columnSettingsExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'change-column-settings.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/change-column-settings/change-column-settings.component.ts'\r\n  }]\">\r\n    <button class=\"btn-link\" (click)=\"columnSettings.toggleColumnSettings()\"> {{columnSettings.active ? 'Hide column settings':'Show column settings'}}</button>\r\n    <gt-column-settings [genericTable]=\"myTable\" #columnSettings>\r\n      <div class=\"table-responsive\">\r\n        <generic-table [gtClasses]=\"'table-hover'\" #myTable [gtSettings]=\"firstConfigObject.settings\" [gtFields]=\"firstConfigObject.fields\" [gtData]=\"firstConfigObject.data\" [gtOptions]=\"{numberOfRows:5}\"></generic-table>\r\n      </div>\r\n      <div class=\"text-center\">\r\n        <gt-pagination [gtClasses]=\"'justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n      </div>\r\n    </gt-column-settings>\r\n\r\n  </div>\r\n  <div class=\"card-footer\" #columnSettingsExample></div>\r\n</div>\r\n\r\n<h5>Customize</h5>\r\n<p>Pass your own template for columns and change texts and css/classes for a custom look and feel.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"columnSettingsTemplateExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','gtData','[gtRowComponent]','[gtOptions]','[genericTable]','#rowLength','gtColumnItem','#myCustomTable','[ngClass]','#customColumnSettings','gtTexts','gtHeaderClasses','gtWrapperClasses']\" [source]=\"'child'\" [target]=\"columnSettingsTemplateExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'change-column-settings.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/change-column-settings/change-column-settings.component.ts'\r\n  }]\">\r\n    <ng-template #gtColumnItem let-column let-index=\"index\" let-name=\"name\">\r\n      <div class=\"btn-group mb-1 col-12 p-0\" role=\"group\">\r\n        <button type=\"button\" class=\"btn btn-sm w-100\" [ngClass]=\"{'btn-success':column.visible !== false, 'btn-danger':column.visible === false}\" style=\"cursor: move;\">{{index}}: {{name}}</button>\r\n        <button type=\"button\" class=\"btn btn-secondary btn-sm w-100\"  (click)=\"customColumnSettings.toggleColumnVisibility(column)\" style=\"cursor: pointer;\">{{column.visible !== false ? 'visible':'hidden'}}</button>\r\n      </div>\r\n    </ng-template>\r\n    <button class=\"btn-link\" (click)=\"customColumnSettings.toggleColumnSettings()\"> {{customColumnSettings.active ? 'Hide column settings':'Show column settings'}}</button>\r\n    <gt-column-settings [genericTable]=\"myCustomTable\" #customColumnSettings [gtColumnItem]=\"gtColumnItem\" [gtTexts]=\"{help:'Click to toggle column visibility, drag to reorder.'}\" [gtHeaderClasses]=\"'px-3 pt-3 pb-2 bg-faded'\" [gtWrapperClasses]=\"'px-3 pb-2 bg-faded h-50'\">\r\n      <div class=\"table-responsive\">\r\n        <generic-table [gtClasses]=\"'table-hover'\" #myCustomTable [gtSettings]=\"secondConfigObject.settings\" [gtFields]=\"secondConfigObject.fields\" [gtData]=\"secondConfigObject.data\"></generic-table>\r\n      </div>\r\n      <div class=\"text-center\">\r\n        <gt-pagination [gtClasses]=\"'justify-content-center'\" [genericTable]=\"myCustomTable\"></gt-pagination>\r\n      </div>\r\n    </gt-column-settings>\r\n  </div>\r\n  <div class=\"card-footer\" #columnSettingsTemplateExample></div>\r\n</div>\r\n\r\n"
+module.exports = "<div class=\"hidden-md-up fixed-top container-fluid mobile-menu px-3 py-2\">\r\n    <div class=\"menu-icon float-right\" [ngClass]=\"{'active':showMenu}\" (click)=\"showMenu = !showMenu\"><div></div></div>\r\n    <menu *ngIf=\"showMenu\" class=\"mt-4 p-0 text-white\"></menu>\r\n</div>\r\n<div class=\"jumbotron mt-4 mt-md-0 bg-teal text-white rounded-0\">\r\n    <div class=\"row no-gutters\">\r\n        <div class=\"col main\">\r\n            <div class=\"container\">\r\n                <h1 class=\"display-4\">Angular Generic Table</h1>\r\n                <p class=\"lead\">A table component for Angular 2+. For more info checkout the docs in the wiki.</p>\r\n                <a class=\"btn btn-primary\" href=\"https://github.com/hjalmers/angular-generic-table/wiki\" target=\"_blank\">Go to wiki</a>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<div class=\"row no-gutters\">\r\n    <div class=\"col main\">\r\n        <div class=\"container\">\r\n            <router-outlet></router-outlet>\r\n        </div>\r\n    </div>\r\n    <div class=\"col col-auto side hidden-sm-down\">\r\n        <menu class=\"p-0\"></menu>\r\n    </div>\r\n</div>\r\n\r\n\r\n"
 
 /***/ }),
 
 /***/ 440:
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Custom columns</h2>\r\n<p>Table using two custom column widgets, as well as external state tracking.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"customColumnsExample\" [context]=\"this\"\r\n       [escapeStrings]=\"['gtSettings','gtFields','gtData','gtClasses']\"\r\n       [source]=\"'child'\" [target]=\"customColumnsExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name: 'app.module.ts',\r\n    src: 'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },\r\n  {\r\n    name: 'custom-column.component.ts',\r\n    src: 'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/custom-column/custom-column.component.ts'\r\n  }]\">\r\n    <generic-table [gtSettings]=\"gtConfig.settings\"\r\n                   [gtFields]=\"gtConfig.fields\"\r\n                   [gtData]=\"gtConfig.data\"\r\n                   [gtClasses]=\"'table-sm'\"></generic-table>\r\n    <button type=\"button\" class=\"btn btn-primary btn-sm float-right\" (click)=\"saveAll()\">Save All</button>\r\n  </div>\r\n  <div class=\"card-footer\" #customColumnsExample></div>\r\n</div>\r\n"
+module.exports = "<h2>Basic</h2>\r\n<p>Table with static data and simple pagination.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"basicExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','[(gtData)]','[gtRowComponent]','[gtOptions]','[genericTable]','#myTable']\" [source]=\"'child'\" [target]=\"basicExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'basic.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/basic/basic.component.ts'\r\n  }]\">\r\n    <generic-table [gtClasses]=\"'table-sm'\" #myTable [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [gtData]=\"configObject.data\"></generic-table>\r\n    <div class=\"text-center\">\r\n      <small><gt-table-info class=\"form-text text-muted mb-2\" [genericTable]=\"myTable\"></gt-table-info></small>\r\n      <gt-pagination [gtClasses]=\"'pagination-sm justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n    </div>\r\n  </div>\r\n  <div class=\"card-footer\" #basicExample></div>\r\n</div>\r\n"
 
 /***/ }),
 
 /***/ 441:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\r\n<div class=\"col-sm-12\">\r\n  <div class=\"row\">\r\n    <h4 class=\"col-10\">My custom row component</h4>\r\n    <div class=\"col-2 text-sm-right\">\r\n      <i class=\"fa fa-close fa-lg\" (click)=\"$hide()\" aria-hidden=\"true\"></i>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"form-group col-sm-3\">\r\n      <label class=\"control-label\">First name</label>\r\n      <div class=\"form-control-static\">{{row.first_name}}</div>\r\n    </div>\r\n    <div class=\"form-group col-sm-3\">\r\n      <label class=\"control-label\">Last name</label>\r\n      <div class=\"form-control-static\">{{row.last_name}}</div>\r\n    </div>\r\n    <div class=\"form-group col-sm-3\">\r\n      <label class=\"control-label\">Favorite color</label>\r\n      <div class=\"form-control-static\">{{row.favorite_color}}</div>\r\n    </div>\r\n    <div class=\"form-group col-sm-3\">\r\n      <div style=\"border-radius: 50%;width: 55px;height: 55px;display: inline-block;vertical-align: middle;\" [style.background]=\"row.favorite_color\"></div>\r\n    </div>\r\n  </div>\r\n  <button class=\"btn btn-primary btn btn-primary col-12 col-sm-auto float-right\" (click)=\"newRandomColor();\">New random color</button>\r\n</div>\r\n</div>\r\n"
+module.exports = "<h2>Column settings component</h2>\r\n<p class=\"lead\">Toggle column visibility and column order using the <code>ColumnSettingsComponent</code>.</p>\r\n<h5>Installation</h5>\r\n<p>Install with npm by running:</p>\r\n<code>npm install @angular-generic-table/column-settings dragula ng2-dragula --save</code>\r\n<p class=\"mt-4\">More info available in the <a href=\"https://github.com/hjalmers/angular-generic-table/wiki/Installation-and-basic-usage\" target=\"_blank\">wiki</a>.</p>\r\n\r\n<h5>Usage</h5>\r\n<p>This how the <code>ColumnSettingsComponent</code> looks and behaves by default but feel free to customize it using css or by passing predefined classes. You can also define your own template for the columns.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"columnSettingsExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','gtData','[gtRowComponent]','[gtOptions]','[genericTable]','#rowLength','#myTable','#columnSettings']\" [source]=\"'child'\" [target]=\"columnSettingsExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'change-column-settings.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/change-column-settings/change-column-settings.component.ts'\r\n  }]\">\r\n    <button class=\"btn-link\" (click)=\"columnSettings.toggleColumnSettings()\"> {{columnSettings.active ? 'Hide column settings':'Show column settings'}}</button>\r\n    <gt-column-settings [genericTable]=\"myTable\" #columnSettings>\r\n      <div class=\"table-responsive\">\r\n        <generic-table [gtClasses]=\"'table-hover'\" #myTable [gtSettings]=\"firstConfigObject.settings\" [gtFields]=\"firstConfigObject.fields\" [gtData]=\"firstConfigObject.data\" [gtOptions]=\"{numberOfRows:5}\"></generic-table>\r\n      </div>\r\n      <div class=\"text-center\">\r\n        <gt-pagination [gtClasses]=\"'justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n      </div>\r\n    </gt-column-settings>\r\n\r\n  </div>\r\n  <div class=\"card-footer\" #columnSettingsExample></div>\r\n</div>\r\n\r\n<h5>Customize</h5>\r\n<p>Pass your own template for columns and change texts and css/classes for a custom look and feel.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"columnSettingsTemplateExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','gtData','[gtRowComponent]','[gtOptions]','[genericTable]','#rowLength','gtColumnItem','#myCustomTable','[ngClass]','#customColumnSettings','gtTexts','gtHeaderClasses','gtWrapperClasses']\" [source]=\"'child'\" [target]=\"columnSettingsTemplateExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'change-column-settings.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/change-column-settings/change-column-settings.component.ts'\r\n  }]\">\r\n    <ng-template #gtColumnItem let-column let-index=\"index\" let-name=\"name\">\r\n      <div class=\"btn-group mb-1 col-12 p-0\" role=\"group\">\r\n        <button type=\"button\" class=\"btn btn-sm w-100\" [ngClass]=\"{'btn-success':column.visible !== false, 'btn-danger':column.visible === false}\" style=\"cursor: move;\">{{index}}: {{name}}</button>\r\n        <button type=\"button\" class=\"btn btn-secondary btn-sm w-100\"  (click)=\"customColumnSettings.toggleColumnVisibility(column)\" style=\"cursor: pointer;\">{{column.visible !== false ? 'visible':'hidden'}}</button>\r\n      </div>\r\n    </ng-template>\r\n    <button class=\"btn-link\" (click)=\"customColumnSettings.toggleColumnSettings()\"> {{customColumnSettings.active ? 'Hide column settings':'Show column settings'}}</button>\r\n    <gt-column-settings [genericTable]=\"myCustomTable\" #customColumnSettings [gtColumnItem]=\"gtColumnItem\" [gtTexts]=\"{help:'Click to toggle column visibility, drag to reorder.'}\" [gtHeaderClasses]=\"'px-3 pt-3 pb-2 bg-faded'\" [gtWrapperClasses]=\"'px-3 pb-2 bg-faded h-50'\">\r\n      <div class=\"table-responsive\">\r\n        <generic-table [gtClasses]=\"'table-hover'\" #myCustomTable [gtSettings]=\"secondConfigObject.settings\" [gtFields]=\"secondConfigObject.fields\" [gtData]=\"secondConfigObject.data\"></generic-table>\r\n      </div>\r\n      <div class=\"text-center\">\r\n        <gt-pagination [gtClasses]=\"'justify-content-center'\" [genericTable]=\"myCustomTable\"></gt-pagination>\r\n      </div>\r\n    </gt-column-settings>\r\n  </div>\r\n  <div class=\"card-footer\" #columnSettingsTemplateExample></div>\r\n</div>\r\n\r\n"
 
 /***/ }),
 
 /***/ 442:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container mt-4\">\r\n  <h1>Angular Generic Table Demo</h1>\r\n  <p>Angular Generic Table is a generic table component for Angular. It uses standard markup for tables ie. table, tr and td elements etc. and has support for expanding rows, global search, filters, sorting on multiple columns, pagination, export to CSV, column clicks, row selection, custom column rendering, custom export values, responsive layout etc. See <a href=\"https://github.com/hjalmers/angular-generic-table\" target=\"_blank\">docs</a> for more info.</p>\r\n  <h3>Examples</h3>\r\n  <ul class=\"nav flex-column mb-5\">\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#basic\">Basic static example</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#rest\">Fetch data using REST</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#localization\">Localization</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#custom\">Custom component inside table cell</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#lazy\">Lazy loading</a>\r\n    </li>\r\n  </ul>\r\n  <app-basic></app-basic>\r\n  <app-rest></app-rest>\r\n  <app-localization></app-localization>\r\n  <app-custom-column></app-custom-column>\r\n  <app-lazy></app-lazy>\r\n</div>\r\n"
+module.exports = "<h2>Custom columns</h2>\r\n<p>Table using two custom column widgets, as well as external state tracking.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"customColumnsExample\" [context]=\"this\"\r\n       [escapeStrings]=\"['gtSettings','gtFields','gtData','gtClasses']\"\r\n       [source]=\"'child'\" [target]=\"customColumnsExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name: 'app.module.ts',\r\n    src: 'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },\r\n  {\r\n    name: 'custom-column.component.ts',\r\n    src: 'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/custom-column/custom-column.component.ts'\r\n  }]\">\r\n    <generic-table [gtSettings]=\"gtConfig.settings\"\r\n                   [gtFields]=\"gtConfig.fields\"\r\n                   [gtData]=\"gtConfig.data\"\r\n                   [gtClasses]=\"'table-sm'\"></generic-table>\r\n    <button type=\"button\" class=\"btn btn-primary btn-sm float-right\" (click)=\"saveAll()\">Save All</button>\r\n  </div>\r\n  <div class=\"card-footer\" #customColumnsExample></div>\r\n</div>\r\n"
 
 /***/ }),
 
 /***/ 443:
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Getting started</h2>\r\n<p class=\"lead\">Angular Generic Table is a generic table component for Angular. It uses standard markup for tables ie. table, tr and td elements etc. and has support for expanding rows, row selection, global search, filters, sorting on multiple columns, pagination, export to CSV, column clicks, custom column rendering, custom export values, responsive layout etc.</p>\r\n<h5>Installation and usage</h5>\r\n<p>Install with npm by running:</p>\r\n<code>npm install @angular-generic-table/core --save</code>\r\n<p class=\"mt-4\">More info available in the <a href=\"https://github.com/hjalmers/angular-generic-table/wiki/Installation-and-usage\" target=\"_blank\">wiki</a>, feel free to look at the <a routerLink=\"/basic\">basic setup</a> too:)</p>\r\n<h5 class=\"mt-4\">Configuration and options</h5>\r\n<p>Check out the <a href=\"https://github.com/hjalmers/angular-generic-table/wiki\" target=\"_blank\">wiki articles</a> for more info.</p>\r\n\r\n"
+module.exports = "<div class=\"row\">\r\n<div class=\"col-sm-12\">\r\n  <div class=\"row\">\r\n    <h4 class=\"col-10\">My custom row component</h4>\r\n    <div class=\"col-2 text-sm-right\">\r\n      <i class=\"fa fa-close fa-lg\" (click)=\"$hide()\" aria-hidden=\"true\"></i>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"form-group col-sm-3\">\r\n      <label class=\"control-label\">First name</label>\r\n      <div class=\"form-control-static\">{{row.first_name}}</div>\r\n    </div>\r\n    <div class=\"form-group col-sm-3\">\r\n      <label class=\"control-label\">Last name</label>\r\n      <div class=\"form-control-static\">{{row.last_name}}</div>\r\n    </div>\r\n    <div class=\"form-group col-sm-3\">\r\n      <label class=\"control-label\">Favorite color</label>\r\n      <div class=\"form-control-static\">{{row.favorite_color}}</div>\r\n    </div>\r\n    <div class=\"form-group col-sm-3\">\r\n      <div style=\"border-radius: 50%;width: 55px;height: 55px;display: inline-block;vertical-align: middle;\" [style.background]=\"row.favorite_color\"></div>\r\n    </div>\r\n  </div>\r\n  <button class=\"btn btn-primary btn btn-primary col-12 col-sm-auto float-right\" (click)=\"newRandomColor();\">New random color</button>\r\n</div>\r\n</div>\r\n"
 
 /***/ }),
 
 /***/ 444:
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Lazy loading</h2>\r\n<p>Use lazy loading to speed things up when working with large data sets and cache data in the table if you want to avoid unnecessary server requests. This example also utilizes column stacking on tablets and mobile devices so resize the browser and see what happens with the layout on smaller screens.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"lazyExample\" [context]=\"this\" [escapeStrings]=\"escape\" [source]=\"'child'\" [target]=\"lazyExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'lazy.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/lazy/lazy.component.ts'\r\n  }]\">\r\n    <form class=\"form form-inline mb-4\">\r\n      <label for=\"highlight_input\" class=\"form-control-label mr-sm-2\">Search</label>\r\n      <input id=\"highlight_input\" class=\"form-control form-control-sm mb-2 mr-sm-2 mb-sm-0\" value=\"al\" disabled placeholder=\"Search\"/>\r\n      <label class=\"form-control-label mr-sm-2\">Visible columns:</label>\r\n      <div class=\"form-check form-check-inline ml-0 mr-sm-2\" *ngFor=\"let column of configObject.settings\">\r\n        <label class=\"form-check-label\">\r\n          <input type=\"checkbox\" name=\"{{column.objectKey}}\" class=\"form-check-input\" [(ngModel)]=\"column.visible\" (change)=\"myTable.redraw()\">\r\n          {{configObject.fields | gtProperty:column.objectKey:'name'}}\r\n        </label>\r\n      </div>\r\n      <small class=\"form-text text-muted\"><gt-table-info [genericTable]=\"myTable\"></gt-table-info></small>\r\n      <small class=\"form-text text-muted mb-2\">\r\n        Please note that the mock service currently doesn't support search, this is why this example has a fixed search string (just to show the highlight feature together with lazy load). Do the search server-side and return search terms in your response. Separate multiple search terms with a space [ ] or match whole phrase by putting them within quotes [\"].\r\n      </small>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.selectAllRows()\">Select all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.deselectAllRows()\">Deselect all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.expandAllRows()\">Expand all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.collapseAllRows()\">Collapse all</button>\r\n    </form>\r\n    <generic-table [gtClasses]=\"'table-hover'\" #myTable [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [(gtData)]=\"configObject.data\" [gtInfo]=\"configObject.info\" [gtRowComponent]=\"expandedRow\" (gtEvent)=\"trigger($event)\" [gtOptions]=\"{stack:true, highlightSearch:true, lazyLoad:true, rowSelection:true}\"></generic-table>\r\n    <div class=\"text-center\">\r\n      <gt-pagination [gtClasses]=\"'justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n    </div>\r\n  </div>\r\n  <div class=\"card-footer\" #lazyExample>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"container mt-4\">\r\n  <h1>Angular Generic Table Demo</h1>\r\n  <p>Angular Generic Table is a generic table component for Angular. It uses standard markup for tables ie. table, tr and td elements etc. and has support for expanding rows, global search, filters, sorting on multiple columns, pagination, export to CSV, column clicks, row selection, custom column rendering, custom export values, responsive layout etc. See <a href=\"https://github.com/hjalmers/angular-generic-table\" target=\"_blank\">docs</a> for more info.</p>\r\n  <h3>Examples</h3>\r\n  <ul class=\"nav flex-column mb-5\">\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#basic\">Basic static example</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#rest\">Fetch data using REST</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#localization\">Localization</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#custom\">Custom component inside table cell</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"examples#lazy\">Lazy loading</a>\r\n    </li>\r\n  </ul>\r\n  <app-basic></app-basic>\r\n  <app-rest></app-rest>\r\n  <app-localization></app-localization>\r\n  <app-custom-column></app-custom-column>\r\n  <app-lazy></app-lazy>\r\n</div>\r\n"
 
 /***/ }),
 
 /***/ 445:
 /***/ (function(module, exports) {
 
-module.exports = "<h2>{{ 'TRANSLATIONS.TITLE' | translate }}</h2>\r\n<p [innerHTML]=\"'TRANSLATIONS.DESCRIPTION' | translate\"></p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">{{'TRANSLATIONS.EXAMPLE' | translate}}</div>\r\n  <div class=\"card-block\" exemplify=\"localizationExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','[(gtData)]','[gtRowComponent]','[gtOptions]','[genericTable]','[gtTexts]','#langSelect','#myTable']\" [source]=\"'child'\" [target]=\"translationsExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'localization.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/localization/localization.component.ts'\r\n  }]\">\r\n    <form class=\"form form-inline mb-4\">\r\n      <label for=\"language\" class=\"form-control-label mr-sm-2\">{{ 'TRANSLATIONS.SELECT' | translate }}</label>\r\n      <select id=\"language\" class=\"form-control form-control-sm mb-2 mr-sm-2 mb-lg-0\" #langSelect (change)=\"translate.use(langSelect.value)\">\r\n        <option *ngFor=\"let lang of translate.getLangs()\" [value]=\"lang\" [selected]=\"lang === translate.currentLang\">{{ lang }}</option>\r\n      </select>\r\n    </form>\r\n    <ng-template [ngIf]=\"configObject\">\r\n      <generic-table [gtClasses]=\"'table-sm'\" #myTable [gtTexts]=\"translations\" [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [gtData]=\"configObject.data\"></generic-table>\r\n      <div class=\"text-center\">\r\n        <small><gt-table-info class=\"form-text text-muted mb-2\" [genericTable]=\"myTable\"></gt-table-info></small>\r\n        <gt-pagination [gtClasses]=\"'pagination-sm justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n      </div>\r\n    </ng-template>\r\n  </div>\r\n  <div class=\"card-footer\" #translationsExample></div>\r\n</div>\r\n"
+module.exports = "<h2>Getting started</h2>\r\n<p class=\"lead\">Angular Generic Table is a generic table component for Angular. It uses standard markup for tables ie. table, tr and td elements etc. and has support for expanding rows, row selection, global search, filters, sorting on multiple columns, pagination, export to CSV, column clicks, custom column rendering, custom export values, responsive layout etc.</p>\r\n<h5>Installation and usage</h5>\r\n<p>Install with npm by running:</p>\r\n<code>npm install @angular-generic-table/core --save</code>\r\n<p class=\"mt-4\">More info available in the <a href=\"https://github.com/hjalmers/angular-generic-table/wiki/Installation-and-usage\" target=\"_blank\">wiki</a>, feel free to look at the <a routerLink=\"/basic\">basic setup</a> too:)</p>\r\n<h5 class=\"mt-4\">Configuration and options</h5>\r\n<p>Check out the <a href=\"https://github.com/hjalmers/angular-generic-table/wiki\" target=\"_blank\">wiki articles</a> for more info.</p>\r\n\r\n"
 
 /***/ }),
 
 /***/ 446:
 /***/ (function(module, exports) {
 
-module.exports = "<h5>Angular generic table</h5>\r\n<ul class=\"navbar-nav mb-4\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/start\" routerLinkActive=\"active\">Getting started</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" href=\"https://github.com/hjalmers/angular-generic-table/releases\" target=\"_blank\">Release notes</a>\r\n  </li>\r\n</ul>\r\n<h5>Core</h5>\r\n<ul class=\"navbar-nav mb-4\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/basic\" routerLinkActive=\"active\">Basic example</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/advanced\" routerLinkActive=\"active\">Advanced example</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/localization\" routerLinkActive=\"active\">Localization</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/lazy\" routerLinkActive=\"active\">Lazy loading</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/custom-column\" routerLinkActive=\"active\">Custom component inside table cell</a>\r\n  </li>\r\n</ul>\r\n<h5>Column settings</h5>\r\n<ul class=\"navbar-nav\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/column-settings-component\" routerLinkActive=\"active\">Column settings component</a>\r\n  </li>\r\n</ul>\r\n"
+module.exports = "<h2>Inline editing</h2>\r\n<p>Table with simple inline editing. Edit cells using input field or select a value from a dropdown.</p>\r\n<div class=\"alert alert-info\">Please note that this example only persists changes in memory so the data will be reset when component is reinitialized e.g when route changes or page is refreshed.</div>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"inlineEditExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','[(gtData)]','[gtRowComponent]','[gtOptions]','[genericTable]','#myTable']\" [source]=\"'child'\" [target]=\"inlineEditExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'inline-editing.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/inline-editing/inline-editing.component.ts'\r\n  }]\">\r\n    <generic-table [gtClasses]=\"'table-sm'\" #myTable [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [gtData]=\"configObject.data\" (gtEvent)=\"trigger($event)\"></generic-table>\r\n    <div class=\"text-center\">\r\n      <small><gt-table-info class=\"form-text text-muted mb-2\" [genericTable]=\"myTable\"></gt-table-info></small>\r\n      <gt-pagination [gtClasses]=\"'pagination-sm justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n    </div>\r\n    <div class=\"alert alert-info\" *ngIf=\"updatedRow\">\r\n      <div><strong>From:</strong> {{updatedRow?.oldValue | json}}</div>\r\n      <div><strong>To:</strong> {{updatedRow?.newValue | json}}</div>\r\n      <div><strong>Original:</strong> {{updatedRow?.originalValue | json}}</div>\r\n    </div>\r\n\r\n  </div>\r\n  <div class=\"card-footer\" #inlineEditExample></div>\r\n</div>\r\n\r\n"
 
 /***/ }),
 
 /***/ 447:
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Advanced</h2>\r\n<p>Fetch data using REST-service, expand rows and display a custom component, use custom functions for rendering, sorting and exporting. Apply predefined filter and simple function for adding new random data to table. To control columns we use the <code><a routerLink=\"/column-settings-component\">ColumnSettingsComponent</a></code>. This example also utilizes column stacking on tablets and mobile devices so resize the browser and see what happens with the layout on smaller screens.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"restExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','gtData','[gtRowComponent]','[gtOptions]','[genericTable]','#rowLength','#myTable','ngModel','[ngClass]','#columnSettings','gtEvent']\" [source]=\"'child'\" [target]=\"restExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'rest.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/rest/rest.component.ts'\r\n  }]\">\r\n    <form class=\"form form-inline mb-4\">\r\n      <label for=\"rows\" class=\"form-control-label mr-sm-2\">Rows</label>\r\n      <select id=\"rows\" class=\"form-control form-control-sm mb-2 mr-sm-2 mb-lg-0\" #rowLength (change)=\"myTable.changeRowLength(rowLength.value)\">\r\n        <option value=10>10</option>\r\n        <option value=25>25</option>\r\n        <option value=50>50</option>\r\n        <option value=100>100</option>\r\n      </select>\r\n      <input class=\"form-control form-control-sm mb-2 mr-sm-2 mb-lg-0\" #search (keyup)=\"applySearch(search.value)\" placeholder=\"Search\"/>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"applyFilter();\">Apply predefined filter</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.gtClearFilter()\">Remove filter</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"addData()\">Add data</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"showColumnControls = !showColumnControls\">Toggle columns</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.exportCSV()\">Export to CSV</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.selectAllRows()\">Select all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.deselectAllRows()\">Deselect all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.expandAllRows()\">Expand all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.collapseAllRows()\">Collapse all</button>\r\n      <small class=\"form-text text-muted col-12 col-xl-auto mb-2 mt-lg-2 my-xl-auto row\"><gt-table-info [genericTable]=\"myTable\"></gt-table-info> Number of selected rows: {{selectedRows}}</small>\r\n      <div *ngIf=\"showColumnControls\" class=\"col-12 row mt-xl-2\">\r\n        <label class=\"form-control-label mr-sm-2\">Visible columns:</label>\r\n        <div class=\"form-check form-check-inline ml-0 ml-sm-2\" *ngFor=\"let column of configObject.settings\">\r\n          <label class=\"form-check-label\">\r\n            <input type=\"checkbox\" name=\"{{column.objectKey}}\" class=\"form-check-input\" [(ngModel)]=\"column.visible\" (change)=\"myTable.redraw()\">\r\n            {{configObject.fields | gtProperty:column.objectKey:'name'}}\r\n          </label>\r\n        </div>\r\n      </div>\r\n    </form>\r\n    <button class=\"btn-link\" (click)=\"columnSettings.toggleColumnSettings()\"> {{columnSettings.active ? 'Hide column settings':'Show column settings'}}</button>\r\n    <gt-column-settings [genericTable]=\"myTable\" #columnSettings>\r\n      <div class=\"table-responsive\">\r\n        <generic-table [gtClasses]=\"'table-hover'\" #myTable [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [gtData]=\"configObject.data\" [gtRowComponent]=\"expandedRow\" [gtOptions]=\"{stack:true, highlightSearch:true, rowSelection:true}\" (gtEvent)=\"trigger($event)\"></generic-table>\r\n      </div>\r\n      <div class=\"text-center\">\r\n        <gt-pagination [gtClasses]=\"'justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n      </div>\r\n    </gt-column-settings>\r\n  </div>\r\n  <div class=\"card-footer\" #restExample>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<h2>Lazy loading</h2>\r\n<p>Use lazy loading to speed things up when working with large data sets and cache data in the table if you want to avoid unnecessary server requests. This example also utilizes column stacking on tablets and mobile devices so resize the browser and see what happens with the layout on smaller screens.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"lazyExample\" [context]=\"this\" [escapeStrings]=\"escape\" [source]=\"'child'\" [target]=\"lazyExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'lazy.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/lazy/lazy.component.ts'\r\n  }]\">\r\n    <form class=\"form form-inline mb-4\">\r\n      <label for=\"highlight_input\" class=\"form-control-label mr-sm-2\">Search</label>\r\n      <input id=\"highlight_input\" class=\"form-control form-control-sm mb-2 mr-sm-2 mb-sm-0\" value=\"al\" disabled placeholder=\"Search\"/>\r\n      <label class=\"form-control-label mr-sm-2\">Visible columns:</label>\r\n      <div class=\"form-check form-check-inline ml-0 mr-sm-2\" *ngFor=\"let column of configObject.settings\">\r\n        <label class=\"form-check-label\">\r\n          <input type=\"checkbox\" name=\"{{column.objectKey}}\" class=\"form-check-input\" [(ngModel)]=\"column.visible\" (change)=\"myTable.redraw()\">\r\n          {{configObject.fields | gtProperty:column.objectKey:'name'}}\r\n        </label>\r\n      </div>\r\n      <small class=\"form-text text-muted\"><gt-table-info [genericTable]=\"myTable\"></gt-table-info></small>\r\n      <small class=\"form-text text-muted mb-2\">\r\n        Please note that the mock service currently doesn't support search, this is why this example has a fixed search string (just to show the highlight feature together with lazy load). Do the search server-side and return search terms in your response. Separate multiple search terms with a space [ ] or match whole phrase by putting them within quotes [\"].\r\n      </small>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.selectAllRows()\">Select all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.deselectAllRows()\">Deselect all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.expandAllRows()\">Expand all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.collapseAllRows()\">Collapse all</button>\r\n    </form>\r\n    <generic-table [gtClasses]=\"'table-hover'\" #myTable [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [(gtData)]=\"configObject.data\" [gtInfo]=\"configObject.info\" [gtRowComponent]=\"expandedRow\" (gtEvent)=\"trigger($event)\" [gtOptions]=\"{stack:true, highlightSearch:true, lazyLoad:true, rowSelection:true}\"></generic-table>\r\n    <div class=\"text-center\">\r\n      <gt-pagination [gtClasses]=\"'justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n    </div>\r\n  </div>\r\n  <div class=\"card-footer\" #lazyExample>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
-/***/ 702:
+/***/ 448:
+/***/ (function(module, exports) {
+
+module.exports = "<h2>{{ 'TRANSLATIONS.TITLE' | translate }}</h2>\r\n<p [innerHTML]=\"'TRANSLATIONS.DESCRIPTION' | translate\"></p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">{{'TRANSLATIONS.EXAMPLE' | translate}}</div>\r\n  <div class=\"card-block\" exemplify=\"localizationExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','[(gtData)]','[gtRowComponent]','[gtOptions]','[genericTable]','[gtTexts]','#langSelect','#myTable']\" [source]=\"'child'\" [target]=\"translationsExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'localization.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/localization/localization.component.ts'\r\n  }]\">\r\n    <form class=\"form form-inline mb-4\">\r\n      <label for=\"language\" class=\"form-control-label mr-sm-2\">{{ 'TRANSLATIONS.SELECT' | translate }}</label>\r\n      <select id=\"language\" class=\"form-control form-control-sm mb-2 mr-sm-2 mb-lg-0\" #langSelect (change)=\"translate.use(langSelect.value)\">\r\n        <option *ngFor=\"let lang of translate.getLangs()\" [value]=\"lang\" [selected]=\"lang === translate.currentLang\">{{ lang }}</option>\r\n      </select>\r\n    </form>\r\n    <ng-template [ngIf]=\"configObject\">\r\n      <generic-table [gtClasses]=\"'table-sm'\" #myTable [gtTexts]=\"translations\" [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [gtData]=\"configObject.data\"></generic-table>\r\n      <div class=\"text-center\">\r\n        <small><gt-table-info class=\"form-text text-muted mb-2\" [genericTable]=\"myTable\"></gt-table-info></small>\r\n        <gt-pagination [gtClasses]=\"'pagination-sm justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n      </div>\r\n    </ng-template>\r\n  </div>\r\n  <div class=\"card-footer\" #translationsExample></div>\r\n</div>\r\n"
+
+/***/ }),
+
+/***/ 449:
+/***/ (function(module, exports) {
+
+module.exports = "<h5>Angular generic table</h5>\r\n<ul class=\"navbar-nav mb-4\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/start\" routerLinkActive=\"active\">Getting started</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" href=\"https://github.com/hjalmers/angular-generic-table/releases\" target=\"_blank\">Release notes</a>\r\n  </li>\r\n</ul>\r\n<h5>Core</h5>\r\n<ul class=\"navbar-nav mb-4\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/basic\" routerLinkActive=\"active\">Basic example</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/advanced\" routerLinkActive=\"active\">Advanced example</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/localization\" routerLinkActive=\"active\">Localization</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/lazy\" routerLinkActive=\"active\">Lazy loading</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/inline-editing\" routerLinkActive=\"active\">Inline editing</a>\r\n  </li>\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/custom-column\" routerLinkActive=\"active\">Custom component inside table cell</a>\r\n  </li>\r\n</ul>\r\n<h5>Column settings</h5>\r\n<ul class=\"navbar-nav\">\r\n  <li class=\"nav-item\">\r\n    <a class=\"nav-link\" routerLink=\"/column-settings-component\" routerLinkActive=\"active\">Column settings component</a>\r\n  </li>\r\n</ul>\r\n"
+
+/***/ }),
+
+/***/ 450:
+/***/ (function(module, exports) {
+
+module.exports = "<h2>Advanced</h2>\r\n<p>Fetch data using REST-service, expand rows and display a custom component, use custom functions for rendering, sorting and exporting. Apply predefined filter and simple function for adding new random data to table. To control columns we use the <code><a routerLink=\"/column-settings-component\">ColumnSettingsComponent</a></code>. This example also utilizes column stacking on tablets and mobile devices so resize the browser and see what happens with the layout on smaller screens.</p>\r\n<div class=\"card mb-5\">\r\n  <div class=\"card-header\">Example</div>\r\n  <div class=\"card-block\" exemplify=\"restExample\" [context]=\"this\" [escapeStrings]=\"['[gtClasses]','[gtSettings]','[gtFields]','gtData','[gtRowComponent]','[gtOptions]','[genericTable]','#rowLength','#myTable','ngModel','[ngClass]','#columnSettings','gtEvent']\" [source]=\"'child'\" [target]=\"restExample\" [navStyle]=\"'tabs'\" [externalSources]=\"[{\r\n    name:'app.module.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/app.module.ts'\r\n  },{\r\n    name:'rest.component.ts',\r\n    src:'https://raw.githubusercontent.com/hjalmers/angular2-generic-table/master/src/app/rest/rest.component.ts'\r\n  }]\">\r\n    <form class=\"form form-inline mb-4\">\r\n      <label for=\"rows\" class=\"form-control-label mr-sm-2\">Rows</label>\r\n      <select id=\"rows\" class=\"form-control form-control-sm mb-2 mr-sm-2 mb-lg-0\" #rowLength (change)=\"myTable.changeRowLength(rowLength.value)\">\r\n        <option value=10>10</option>\r\n        <option value=25>25</option>\r\n        <option value=50>50</option>\r\n        <option value=100>100</option>\r\n      </select>\r\n      <input class=\"form-control form-control-sm mb-2 mr-sm-2 mb-lg-0\" #search (keyup)=\"myTable.gtSearch(search.value)\" placeholder=\"Search\"/>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"applyFilter();\">Apply predefined filter</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.gtClearFilter()\">Remove filter</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"addData()\">Add data</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"showColumnControls = !showColumnControls\">Toggle columns</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.exportCSV()\">Export to CSV</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.selectAllRows()\">Select all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.deselectAllRows()\">Deselect all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.expandAllRows()\">Expand all</button>\r\n      <button class=\"btn btn-secondary btn-sm col-12 col-sm-auto mb-2 mr-sm-2 mb-lg-0\" (click)=\"myTable.collapseAllRows()\">Collapse all</button>\r\n      <small class=\"form-text text-muted col-12 col-xl-auto mb-2 mt-lg-2 my-xl-auto row\"><gt-table-info [genericTable]=\"myTable\"></gt-table-info> Number of selected rows: {{selectedRows}}</small>\r\n      <div *ngIf=\"showColumnControls\" class=\"col-12 row mt-xl-2\">\r\n        <label class=\"form-control-label mr-sm-2\">Visible columns:</label>\r\n        <div class=\"form-check form-check-inline ml-0 ml-sm-2\" *ngFor=\"let column of configObject.settings\">\r\n          <label class=\"form-check-label\">\r\n            <input type=\"checkbox\" name=\"{{column.objectKey}}\" class=\"form-check-input\" [(ngModel)]=\"column.visible\" (change)=\"myTable.redraw()\">\r\n            {{configObject.fields | gtProperty:column.objectKey:'name'}}\r\n          </label>\r\n        </div>\r\n      </div>\r\n    </form>\r\n    <button class=\"btn-link\" (click)=\"columnSettings.toggleColumnSettings()\"> {{columnSettings.active ? 'Hide column settings':'Show column settings'}}</button>\r\n    <gt-column-settings [genericTable]=\"myTable\" #columnSettings>\r\n      <div class=\"table-responsive\">\r\n        <generic-table [gtClasses]=\"'table-hover'\" #myTable [gtSettings]=\"configObject.settings\" [gtFields]=\"configObject.fields\" [gtData]=\"configObject.data\" [gtRowComponent]=\"expandedRow\" [gtOptions]=\"{stack:true, highlightSearch:true, rowSelection:true}\" (gtEvent)=\"trigger($event)\"></generic-table>\r\n      </div>\r\n      <div class=\"text-center\">\r\n        <gt-pagination [gtClasses]=\"'justify-content-center'\" [genericTable]=\"myTable\"></gt-pagination>\r\n      </div>\r\n    </gt-column-settings>\r\n  </div>\r\n  <div class=\"card-footer\" #restExample>\r\n  </div>\r\n</div>\r\n"
+
+/***/ }),
+
+/***/ 705:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(385);
+module.exports = __webpack_require__(387);
 
 
 /***/ }),
@@ -4827,36 +5419,36 @@ module.exports = __webpack_require__(385);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_gt_expanding_row_component__ = __webpack_require__(318);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_gt_expanding_row_component__ = __webpack_require__(319);
 /* unused harmony reexport GtExpandingRowComponent */
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_0__components_gt_expanding_row_component__["b"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_generic_table_component__ = __webpack_require__(132);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__components_generic_table_component__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_gt_table_info_component__ = __webpack_require__(320);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_gt_table_info_component__ = __webpack_require__(321);
 /* unused harmony reexport GtTableInfoComponent */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_gt_pagination_component__ = __webpack_require__(319);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_gt_pagination_component__ = __webpack_require__(320);
 /* unused harmony reexport GtPaginationComponent */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core_module__ = __webpack_require__(397);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core_module__ = __webpack_require__(399);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_4__core_module__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interfaces_gt_config__ = __webpack_require__(401);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interfaces_gt_config__ = __webpack_require__(403);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interfaces_gt_config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__interfaces_gt_config__);
 /* unused harmony reexport GtConfig */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__interfaces_gt_config_field__ = __webpack_require__(399);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__interfaces_gt_config_field__ = __webpack_require__(401);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__interfaces_gt_config_field___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__interfaces_gt_config_field__);
 /* unused harmony reexport GtConfigField */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__interfaces_gt_config_setting__ = __webpack_require__(400);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__interfaces_gt_config_setting__ = __webpack_require__(402);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__interfaces_gt_config_setting___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__interfaces_gt_config_setting__);
 /* unused harmony reexport GtConfigSetting */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__interfaces_gt_information__ = __webpack_require__(321);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__interfaces_gt_information__ = __webpack_require__(322);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__interfaces_gt_information___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__interfaces_gt_information__);
 /* unused harmony reexport GtInformation */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__interfaces_gt_row__ = __webpack_require__(402);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__interfaces_gt_row__ = __webpack_require__(404);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__interfaces_gt_row___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__interfaces_gt_row__);
 /* unused harmony reexport GtRow */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__interfaces_gt_texts__ = __webpack_require__(323);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__interfaces_gt_texts__ = __webpack_require__(324);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__interfaces_gt_texts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__interfaces_gt_texts__);
 /* unused harmony reexport GtTexts */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__interfaces_gt_options__ = __webpack_require__(322);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__interfaces_gt_options__ = __webpack_require__(323);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__interfaces_gt_options___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__interfaces_gt_options__);
 /* unused harmony reexport GtOptions */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__components_gt_custom_component_factory__ = __webpack_require__(147);
@@ -4878,5 +5470,5 @@ module.exports = __webpack_require__(385);
 
 /***/ })
 
-},[702]);
+},[705]);
 //# sourceMappingURL=main.bundle.js.map
